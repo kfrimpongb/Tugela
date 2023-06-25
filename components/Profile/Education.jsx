@@ -19,6 +19,7 @@ const Education = () => {
           labelStyle={styles.buttonText}
         >
           Ashesi University
+          
         </Button>
         <Button
           mode="outlined"
@@ -26,6 +27,7 @@ const Education = () => {
           labelStyle={styles.buttonText}
         >
           Datacamp
+
         </Button>
 
         <Button
@@ -34,6 +36,7 @@ const Education = () => {
             labelStyle={styles.buttonText}
         >
           Coursera
+
         </Button>
 
       </View>
