@@ -124,28 +124,6 @@ const Item = ({ title, time, category, salary, description }) => {
               >
                 has been sent.
               </CustomText>
-              {/*<CustomText*/}
-              {/*  style={{*/}
-              {/*    fontSize: 20,*/}
-              {/*    textAlign: "center",*/}
-              {/*    color: colors.text,*/}
-              {/*    paddingTop: 20,*/}
-              {/*  }}*/}
-              {/*  weight="regular"*/}
-              {/*>*/}
-              {/*  visiting*/}
-              {/*</CustomText>*/}
-              {/*<CustomText*/}
-              {/*  style={{*/}
-              {/*    fontSize: 22,*/}
-              {/*    textAlign: "center",*/}
-              {/*    color: colors.text,*/}
-              {/*    paddingTop: 20,*/}
-              {/*  }}*/}
-              {/*  weight="bold"*/}
-              {/*>*/}
-              {/*  www.upwork.com*/}
-              {/*</CustomText>*/}
             </View>
             <ActivityIndicator
               animating={true}
