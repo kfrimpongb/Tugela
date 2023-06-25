@@ -55,7 +55,8 @@ async function main() {
     console.log("2_CREATING_ESCROW: Engagement Agreement between Client and Freelancer");
 
     const delta = await getTimes();
-    const expiration = new Date((delta.cancelAfter + Date.UTC(2000, 0, 1, 0, 0, 0, 0)) * 1000);
+    // const expiration = new Date((delta.cancelAfter + Date.UTC(2000, 0, 1, 0, 0, 0, 0)) * 1000);
+    const expiration = await toDateTime(delta.cancelAfter)
 
     const createEscrow = await client.autofill({
       Account: wallet1.wallet.address,
@@ -144,6 +145,15 @@ async function main() {
   } else {
     console.log(" - Payment Result:", transactionResponse.result.meta.TransactionResult);
     console.log(" - Payment Failed");
+  }
+
+  async function toDateTime(secs) {
+    var xrpl_epoch = Date.UTC(2000,  0, 1, 0, 0, 0, 0) // XRPL Epoch Jan 1, 2000 00:00
+    _secs_after_xrpl_epoch = secs + xrpl_epoch/1000
+  
+    var t = new Date(1970, 0, 1); // Normal Epoch Jan 1, 1970
+    t.setSeconds(_secs_after_xrpl_epoch);
+    return t;
   }
 
   client.disconnect();
