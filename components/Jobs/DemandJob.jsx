@@ -27,9 +27,7 @@ const Item = ({ title, time, category, salary, description }) => {
     if (modalVisible) {
       setTimeout(() => {
         setModalVisible(false);
-        // Only open the URL if the cancel action hasn't been taken
         if (!cancelled) {
-          // Linking.openURL("http://www.upwork.com");
         }
       }, 3000);
     }
