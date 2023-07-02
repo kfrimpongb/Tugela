@@ -1,5 +1,5 @@
 # Tugela
-The **AI-powered** talent liquidity pool connecting African freelancers to the global economy.  Leveraging AI and XRPL technology, Tugela provides frictionless inter/intracontinental payemnts solutions, currency store-of-value flexibility, as well as automatic recommendations tailored to freelancer profiles.
+The **AI-powered** talent liquidity pool connecting African freelancers to the global economy.  Leveraging AI and XRPL technology, Tugela provides frictionless cross-border payemnt solutions, currency store-of-value flexibility, as well as automatic recommendations tailored to freelancer profiles.
 
 ![On-demand Job Feed](https://github.com/j-blytix/Tugela/blob/main/docs/images/product_overview2.png)
 
