@@ -2,7 +2,7 @@
 Named after the majestic river that flows through the heart of South Africa, **Tugela** not only evokes a sense of power and untamed beauty that exists on a continent rich with resources, it symbolizes the enduring spirit of a generation of youth. 
 
 This inspiration served as the impetus in creating the **AI-powered** talent liquidity pool which connects African freelancers to the global economy. Leveraging AI and XRPL technology, Tugela provides:
-- Frictionless cross-border payemnt solutions
+- Frictionless cross-border payment solutions
 - Currency store-of-value flexibility
 - Job recommendations and training tailored to freelancer profiles.
 
