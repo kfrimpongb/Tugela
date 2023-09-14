@@ -20,7 +20,7 @@ In August 2023, we conducted a series of interviews of freelancers and entrepren
 
 *Figma Designs*
 
-After aggregating these results and feedback, we incorporated the insights back into the design in order to optimize the user experience. These flows can be depicted with the Figma design found [here](https://www.figma.com/proto/y6DMTl5DfEuPkT41GwieqV/Tugela?page-id=0%3A1&type=design&node-id=2-8093&viewport=321%2C160%2C0.07&t=6FEreF6tjI2heDG9-1&scaling=scale-down&starting-point-node-id=2%3A8093).
+After aggregating these results and feedback, we incorporated the insights back into the design in order to optimize the user experience. These flows can be depicted with the Figma design found [here](https://www.figma.com/proto/rksHbnJX8FHJ1Hwi5FViTt/Tugela-For-XRP?type=design&node-id=1-12570&t=gVpPD1h45wNs0bsS-0&scaling=scale-down&page-id=0%3A1&starting-point-node-id=1%3A12570).
 
 
 ![The Impact](https://github.com/j-blytix/Tugela/blob/main/docs/images/impact.png)
