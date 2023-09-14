@@ -21,6 +21,11 @@ A freelance platform that seamlessly connects African youth and young profession
 
 ![XRPL Reference Flow](https://github.com/j-blytix/Tugela/blob/main/docs/images/framework.jpeg)
 
+### Process Map
+High level process map which describes interaction patterns between services, key personas, and the XRP Ledger.
+
+![Process Map](https://github.com/j-blytix/Tugela/blob/main/docs/images/ProcessMap6.png)
+
 
 
 
