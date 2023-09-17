@@ -11,6 +11,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+Backend/python/models/.ipynb_checkpoints
 
 # macOS
 .DS_Store
