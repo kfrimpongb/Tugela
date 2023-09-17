@@ -11,6 +11,6 @@
   "description": "",
   "dependencies": {
     "five-bells-condition": "^5.0.1",
-    "xrpl": "^2.8.1"
+    "xrpl": "^2.11.0"
   }
 }

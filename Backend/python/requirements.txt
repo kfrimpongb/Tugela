@@ -1,0 +1,4 @@
+openai
+mysql-connector-python
+langchain==0.0.292
+pandas==2.1.0
