@@ -1,3 +1,3 @@
-const { memoStringToHex } = require("./main");
+const { memoStringToHex } = require("./simulateEscrow");
 
 await memoStringToHex()
