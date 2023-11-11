@@ -3,8 +3,6 @@ import AppNavigator from "./navigations/AppNavigator";
 import AuthProvider from "./context/AuthContext";
 import { StatusBar } from "expo-status-bar";
 import loadFonts from "./loadFonts";
-import { TamaguiProvider } from "tamagui";
-import appConfig from "./tamagui.config";
 
 export default function App() {
   const fontLoaded = loadFonts();
@@ -12,13 +10,11 @@ export default function App() {
     return null;
   }
   return (
-    <TamaguiProvider config={appConfig}>
-      <NavigationContainer>
-        <AuthProvider>
-          <StatusBar style="auto" />
-          <AppNavigator />
-        </AuthProvider>
-      </NavigationContainer>
-    </TamaguiProvider>
+    <NavigationContainer>
+      <AuthProvider>
+        <StatusBar style="auto" />
+        <AppNavigator />
+      </AuthProvider>
+    </NavigationContainer>
   );
 }
