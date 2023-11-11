@@ -1,19 +1,27 @@
 import { StyleSheet, SafeAreaView, Image } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import colors from "../colors";
 
 import { Fonts } from "../theme";
 import { useNavigation } from "@react-navigation/native";
-import { XStack, Text, Button, YStack, Stack } from "tamagui";
+import { XStack, Text, Button, YStack, Stack, Spinner } from "tamagui";
 import onboard from "../assets/images/onboard.jpg";
 import fav from "../assets/images/fav.png";
 
 const SplashScreen = () => {
   const navigation = useNavigation();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigateToLogin = () => {
-    navigation.navigate("Login");
+    setIsLoading(true);
+    // Simulate a network request or loading period
+    setTimeout(() => {
+      setIsLoading(false);
+      navigation.navigate("Login");
+    }, 2000); // Adjust the time as needed
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <YStack space="$3" justifyContent="center" alignItems="center" flex={5}>
@@ -39,8 +47,12 @@ const SplashScreen = () => {
         </Text>
       </YStack>
       <YStack flex={1} justifyContent="center" paddingHorizontal="$4">
-        <Button style={styles.button} size="$6">
-          Get Started
+        <Button style={styles.button} size="$6" onPress={navigateToLogin}>
+          {isLoading ? (
+            <Spinner size="large" color={colors.white} />
+          ) : (
+            "Get Started"
+          )}
         </Button>
       </YStack>
     </SafeAreaView>
