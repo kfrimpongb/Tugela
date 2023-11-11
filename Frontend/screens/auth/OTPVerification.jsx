@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const SignUpScreen = () => {
+const OTPVerification = () => {
   return (
     <View>
-      <Text>SignUpScreen</Text>
+      <Text>OTPVerification</Text>
     </View>
   );
 };
 
-export default SignUpScreen;
+export default OTPVerification;
 
 const styles = StyleSheet.create({});
