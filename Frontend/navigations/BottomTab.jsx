@@ -5,10 +5,6 @@ import { StyleSheet } from "react-native";
 
 import colors from "../colors";
 import HomeScreen from "../screens/HomeScreen";
-import JobScreen from "../screens/JobScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import Settings from "../screens/Settings";
-import Notifications from "../screens/Notifications";
 
 const Tab = createBottomTabNavigator();
 
@@ -48,26 +44,6 @@ const BottomTab = () => {
       <Tab.Screen
         name="home"
         component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="jobs"
-        component={JobScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="profile"
-        component={ProfileScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="settings"
-        component={Settings}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="notification"
-        component={Notifications}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>

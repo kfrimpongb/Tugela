@@ -1,19 +1,15 @@
 import {
   useFonts,
-  Montserrat_400Regular,
-  Montserrat_500Medium,
-  Montserrat_600SemiBold,
-  Montserrat_700Bold,
-  Montserrat_800ExtraBold,
-} from "@expo-google-fonts/montserrat";
+  DMSans_400Regular,
+  DMSans_500Medium,
+  DMSans_700Bold,
+} from "@expo-google-fonts/dm-sans";
 
 export default function LoadFonts() {
   let [fontLoaded] = useFonts({
-    Montserrat_400Regular,
-    Montserrat_500Medium,
-    Montserrat_600SemiBold,
-    Montserrat_700Bold,
-    Montserrat_800ExtraBold,
+    DMSans_400Regular: DMSans_400Regular,
+    DMSans_500Medium: DMSans_500Medium,
+    DMSans_700Bold: DMSans_700Bold,
   });
 
   return fontLoaded;

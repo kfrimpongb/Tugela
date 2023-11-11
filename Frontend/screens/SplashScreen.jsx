@@ -1,10 +1,12 @@
-import { View, StyleSheet, SafeAreaView, Image } from "react-native";
+import { StyleSheet, SafeAreaView, Image } from "react-native";
 import React from "react";
 import colors from "../colors";
-import CustomText from "../components/CustomText";
-import { Button } from "react-native-paper";
+
 import { Fonts } from "../theme";
 import { useNavigation } from "@react-navigation/native";
+import { XStack, Text, Button, YStack, Stack } from "tamagui";
+import onboard from "../assets/images/onboard.jpg";
+import fav from "../assets/images/fav.png";
 
 const SplashScreen = () => {
   const navigation = useNavigation();
@@ -14,28 +16,33 @@ const SplashScreen = () => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.textContainer}>
-        <CustomText weight="semiBold" style={styles.text}>
+      <YStack space="$3" justifyContent="center" alignItems="center" flex={5}>
+        <Image source={onboard} style={styles.image} />
+        <Image source={fav} style={styles.fav} />
+      </YStack>
+      <YStack
+        space="$4"
+        paddingVertical="$3"
+        justifyContent="center"
+        alignItems="center"
+        width={"100%"}
+        flex={3}
+      >
+        <Text fontSize={40} fontFamily={Fonts.bold} color={colors.title}>
+          Tugela
+        </Text>
+        <Text fontSize={20} fontFamily={Fonts.regular} color={colors.text}>
           Work from
-        </CustomText>
-        <CustomText weight="semiBold" style={styles.text}>
-          Anywhere...Anytime
-        </CustomText>
-      </View>
-      <View style={styles.imageContainer}>
-        <Image source={require("../assets/images/splash.png")} />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
-          buttonColor={colors.primary}
-          style={styles.button}
-          labelStyle={styles.buttonText}
-          onPress={navigateToLogin}
-        >
+        </Text>
+        <Text fontSize={20} fontFamily={Fonts.regular} color={colors.text}>
+          Anywhere.....Anytime
+        </Text>
+      </YStack>
+      <YStack flex={1} justifyContent="center" paddingHorizontal="$4">
+        <Button style={styles.button} size="$6">
           Get Started
         </Button>
-      </View>
+      </YStack>
     </SafeAreaView>
   );
 };
@@ -47,34 +54,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     fontFamily: Fonts.regular,
-  },
-  textContainer: {
-    flex: 0.3,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "column",
+    height: "100%",
   },
   text: {
-    fontSize: 24,
-    color: colors.white,
-    marginVertical: 4,
-  },
-  imageContainer: {
-    flex: 0.4,
-  },
-  buttonContainer: {
-    flex: 0.3,
-    justifyContent: "flex-end",
-    marginHorizontal: 14,
-    paddingBottom: 10,
+    fontFamily: Fonts.bold,
   },
   button: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 70,
+    fontSize: 16,
+    fontFamily: Fonts.bold,
+    backgroundColor: colors.primary,
+    color: colors.white,
   },
-  buttonText: {
-    fontSize: 18,
-    fontFamily: Fonts.semiBold,
+  image: {
+    width: "100%",
+    height: "100%",
+  },
+  fav: {
+    width: 70,
+    height: 70,
+    position: "absolute",
+    bottom: 0,
+    marginVertical: -35,
   },
 });
