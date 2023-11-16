@@ -1,16 +1,22 @@
 import {
   useFonts,
-  DMSans_400Regular,
-  DMSans_500Medium,
-  DMSans_700Bold,
-} from "@expo-google-fonts/dm-sans";
+  Poppins_300Light,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_700Bold,
+  Poppins_600SemiBold,
+  Poppins_800ExtraBold,
+} from "@expo-google-fonts/poppins";
 
 export default function LoadFonts() {
-  let [fontLoaded] = useFonts({
-    DMSans_400Regular: DMSans_400Regular,
-    DMSans_500Medium: DMSans_500Medium,
-    DMSans_700Bold: DMSans_700Bold,
+  const fontsLoaded = useFonts({
+    Poppins_300Light,
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+    Poppins_800ExtraBold,
   });
 
-  return fontLoaded;
+  return fontsLoaded;
 }

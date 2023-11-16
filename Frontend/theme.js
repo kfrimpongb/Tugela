@@ -1,5 +1,8 @@
 export const Fonts = {
-  regular: "DMSans_400Regular",
-  medium: "DMSans_500Medium",
-  bold: "DMSans_700Bold",
+  light: "Poppins_300Light",
+  regular: "Poppins_400Regular",
+  medium: "Poppins_500Medium",
+  semibold: "Poppins_600SemiBold",
+  bold: "Poppins_700Bold",
+  extrabold: "Poppins_800ExtraBold",
 };

@@ -1,19 +1,14 @@
-import {
-  StyleSheet,
-  SafeAreaView,
-  Image,
-  Button,
-  Text,
-  View,
-} from "react-native";
+import { StyleSheet, SafeAreaView, Image, View } from "react-native";
 import React, { useState } from "react";
 import colors from "../colors";
 
-import { Fonts } from "../theme";
 import { useNavigation } from "@react-navigation/native";
-
+import { Button, Text } from "@rneui/themed";
+import CustomText from "../components/ui/Text";
 import onboard from "../assets/images/onboard.jpg";
 import fav from "../assets/images/fav.png";
+import { Fonts } from "../theme";
+import { Global } from "../globalStyles";
 
 const SplashScreen = () => {
   const navigation = useNavigation();
@@ -30,28 +25,25 @@ const SplashScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <View style={styles.Images}>
         <Image source={onboard} style={styles.image} />
         <Image source={fav} style={styles.fav} />
       </View>
-      <View>
-        <Text fontSize={40} fontFamily={Fonts.bold} color={colors.title}>
-          Tugela
-        </Text>
-        <Text fontSize={20} fontFamily={Fonts.regular} color={colors.text}>
-          Work from
-        </Text>
-        <Text fontSize={20} fontFamily={Fonts.regular} color={colors.text}>
-          Anywhere.....Anytime
-        </Text>
+      <View style={styles.content}>
+        <CustomText style={Global.h1}>Tugela</CustomText>
+        <CustomText style={Global.h3}>Work from</CustomText>
+        <CustomText style={Global.h3}>Anywhere.....Anytime</CustomText>
       </View>
-      <View>
-        <Button
-          style={styles.button}
-          onPress={navigateToLogin}
-          title="Get Started"
-        ></Button>
-      </View>
+
+      <Button
+        style={styles.button}
+        title="Get Started"
+        type="solid"
+        size="lg"
+        buttonStyle={styles.button}
+        titleStyle={styles.buttonText}
+        containerStyle={styles.buttonContainer}
+      />
     </SafeAreaView>
   );
 };
@@ -66,15 +58,20 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "column",
     height: "100%",
+    width: "100%",
   },
   text: {
     fontFamily: Fonts.bold,
   },
   button: {
-    fontSize: 16,
-    fontFamily: Fonts.bold,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: colors.primary,
     color: colors.white,
+    width: "90%",
+    height: "80%",
+    borderRadius: 10,
   },
   image: {
     width: "100%",
@@ -85,6 +82,30 @@ const styles = StyleSheet.create({
     height: 70,
     position: "absolute",
     bottom: 0,
-    marginVertical: -35,
+    marginVertical: -45,
+  },
+  Images: {
+    flex: 5,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  content: {
+    flex: 3,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonContainer: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingVertical: 20,
+  },
+  buttonText: {
+    fontFamily: Fonts.bold,
+    fontSize: 16,
   },
 });
