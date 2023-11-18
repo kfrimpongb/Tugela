@@ -5,6 +5,8 @@ import LoginScreen from "../screens/auth/LoginScreen";
 import SignUpScreen from "../screens/auth/SignUpScreen";
 import ForgotPassword from "../screens/auth/ForgotPassword";
 import ResetPassword from "../screens/auth/ResetPassword";
+import OTPVerification from "../screens/auth/OTPVerification";
+import Back from "../components/ui/Back";
 const Stack = createStackNavigator();
 const AuthNavigator = () => {
   return (
@@ -33,6 +35,14 @@ const AuthNavigator = () => {
         name="ResetPassword"
         component={ResetPassword}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OTP"
+        component={OTPVerification}
+        options={{
+          headerLeft: () => <Back />,
+          headerTitle: "",
+        }}
       />
     </Stack.Navigator>
   );

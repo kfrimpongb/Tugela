@@ -24,7 +24,7 @@ const SignUpScreen = () => {
   const navigation = useNavigation();
 
   const navigateToOtp = () => {
-    navigation.navigate("ForgotPassword");
+    navigation.navigate("OTP");
   };
   const navigateToLogin = () => {
     navigation.navigate("Login");
