@@ -10,6 +10,7 @@ import {
 import React, { useState } from "react";
 
 import tp from "../../assets/images/OTP.png";
+import check from "../../assets/images/check.png";
 import { Fonts } from "../../theme";
 import colors from "../../colors";
 import CustomText from "../../components/ui/Text";
@@ -17,22 +18,26 @@ import { Global } from "../../globalStyles";
 import CustomButton from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import OtpInputs from "../../components/OTP";
+import { BottomSheet } from "@rneui/themed";
 
 const OTPVerification = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
   const [otp, setOtp] = useState("");
+  const [visible, setVisible] = useState(false);
 
   const handleOtpComplete = (otpValue) => {
     setOtp(otpValue);
   };
 
-  const navigateToOtp = () => {
+  const showBottomSheet = () => {
+    setVisible(true);
     navigation.navigate("OTP");
   };
-  const navigateToLogin = () => {
-    navigation.navigate("Login");
+  const navigateToOnboarding = () => {
+    setVisible(false);
+    navigation.navigate("Onboarding");
   };
   const isFormValid = () => {
     return email !== "" && password !== "";
@@ -74,7 +79,7 @@ const OTPVerification = () => {
             <OtpInputs onOtpComplete={handleOtpComplete} />
             <View style={styles.account}>
               <View style={styles.signup}>
-                <TouchableOpacity onPress={navigateToLogin}>
+                <TouchableOpacity>
                   <CustomText style={styles.forgot} weight="semibold">
                     Send code again
                   </CustomText>
@@ -84,11 +89,52 @@ const OTPVerification = () => {
             <CustomButton
               title={"Confirm"}
               disabled={isFormValid()}
-              onPress={navigateToOtp}
+              onPress={showBottomSheet}
             />
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
+      <BottomSheet isVisible={visible} modalProps={{}}>
+        <View style={styles.bottomSheet}>
+          <TouchableOpacity
+            onPress={() => setVisible(!visible)}
+            style={styles.closeButton}
+          >
+            <CustomText
+              weight="semibold"
+              style={{ fontSize: 16, color: colors.text }}
+            >
+              Close
+            </CustomText>
+          </TouchableOpacity>
+          <Image source={check} style={styles.check} />
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "column",
+              alignItems: "center",
+              paddingBottom: 60,
+            }}
+          >
+            <CustomText weight="semibold" style={{ fontSize: 24 }}>
+              Verified Successfully
+            </CustomText>
+            <CustomText
+              weight="regular"
+              style={{ fontSize: 14, textAlign: "center", paddingTop: 4 }}
+            >
+              We have successfully verified your email address.
+            </CustomText>
+          </View>
+          <View style={{ width: "100%", paddingBottom: 16 }}>
+            <CustomButton
+              title={"Continue"}
+              disabled={isFormValid()}
+              onPress={navigateToOnboarding}
+            />
+          </View>
+        </View>
+      </BottomSheet>
     </SafeAreaView>
   );
 };
@@ -116,6 +162,12 @@ const styles = StyleSheet.create({
   fav: {
     width: 60,
     height: 60,
+    marginRight: 4,
+    marginBottom: 14,
+  },
+  check: {
+    width: 100,
+    height: 100,
     marginRight: 4,
     marginBottom: 14,
   },
@@ -177,5 +229,23 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: Fonts.medium,
     color: colors.primary,
+  },
+  bottomSheet: {
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    backgroundColor: colors.background,
+    borderTopRightRadius: 24,
+    borderTopLeftRadius: 24,
+    paddingBottom: 16,
+    paddingHorizontal: 24,
+  },
+  closeButton: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-start",
+    paddingVertical: 32,
   },
 });
