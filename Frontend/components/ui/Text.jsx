@@ -2,11 +2,15 @@ import React from "react";
 import { Text as DefaultText } from "@rneui/themed";
 import { Fonts } from "../../theme";
 
-export default function CustomText(props) {
+export default function CustomText({
+  style,
+  children,
+  weight = "regular",
+  ...props
+}) {
   return (
-    <DefaultText
-      {...props}
-      style={[{ fontFamily: Fonts.regular }, props.style]}
-    />
+    <DefaultText style={[{ fontFamily: Fonts[weight] }, style]} {...props}>
+      {children}
+    </DefaultText>
   );
 }

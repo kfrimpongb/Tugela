@@ -3,22 +3,19 @@ import React, { useState } from "react";
 import colors from "../colors";
 
 import { useNavigation } from "@react-navigation/native";
-import { Button, Text } from "@rneui/themed";
+import { Button } from "@rneui/themed";
 import CustomText from "../components/ui/Text";
 import onboard from "../assets/images/onboard.jpg";
 import fav from "../assets/images/fav.png";
 import { Fonts } from "../theme";
 import { Global } from "../globalStyles";
+import CustomButton from "../components/Button";
 
 const SplashScreen = () => {
   const navigation = useNavigation();
 
-  const [isLoading, setIsLoading] = useState(false);
-
   const navigateToLogin = () => {
-    setIsLoading(true);
     setTimeout(() => {
-      setIsLoading(false);
       navigation.navigate("Login");
     }, 2000);
   };
@@ -30,20 +27,20 @@ const SplashScreen = () => {
         <Image source={fav} style={styles.fav} />
       </View>
       <View style={styles.content}>
-        <CustomText style={Global.h1}>Tugela</CustomText>
-        <CustomText style={Global.h3}>Work from</CustomText>
-        <CustomText style={Global.h3}>Anywhere.....Anytime</CustomText>
+        <CustomText style={Global.h1} weight="medium">
+          Tugela
+        </CustomText>
+        <CustomText style={Global.h4}>Work from</CustomText>
+        <CustomText style={Global.h4}>Anywhere.....Anytime</CustomText>
       </View>
-
-      <Button
-        style={styles.button}
-        title="Get Started"
-        type="solid"
-        size="lg"
-        buttonStyle={styles.button}
-        titleStyle={styles.buttonText}
-        containerStyle={styles.buttonContainer}
-      />
+      <View style={styles.Button}>
+        <CustomButton
+          title={"Get Started"}
+          onPress={navigateToLogin}
+          disabled={false}
+          size="lg"
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -63,16 +60,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: Fonts.bold,
   },
-  button: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.primary,
-    color: colors.white,
-    width: "90%",
-    height: "80%",
-    borderRadius: 10,
-  },
+
   image: {
     width: "100%",
     height: "100%",
@@ -96,16 +84,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonContainer: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    paddingVertical: 20,
-  },
-  buttonText: {
-    fontFamily: Fonts.bold,
-    fontSize: 16,
+
+  Button: {
+    paddingHorizontal: 24,
+    paddingBottom: 20,
   },
 });

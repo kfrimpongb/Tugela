@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { Fonts } from "./theme";
+import colors from "./colors";
 
 export const Global = StyleSheet.create({
   container: {
@@ -10,31 +11,33 @@ export const Global = StyleSheet.create({
     width: "100%",
   },
   h1: {
-    fontFamily: Fonts.semibold,
-    fontSize: 36,
+    fontSize: 32,
+    color: colors.title,
   },
   h2: {
-    fontFamily: Fonts.medium,
     fontSize: 24,
+    color: colors.title,
   },
   h3: {
-    fontFamily: Fonts.regular,
     fontSize: 20,
+    color: colors.title,
   },
   h4: {
-    fontFamily: Fonts.regular,
+    fontSize: 18,
+    color: colors.text,
+  },
+  h5: {
     fontSize: 16,
+    color: colors.text,
   },
   buttonText: {
     fontFamily: Fonts.semibold,
     fontSize: 16,
   },
   caption: {
-    fontFamily: Fonts.regular,
     fontSize: 14,
   },
-  smallText: {
-    fontFamily: Fonts.regular,
+  small: {
     fontSize: 12,
   },
 });
