@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   View,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -25,6 +26,9 @@ const LoginScreen = () => {
 
   const navigateToForgotPassword = () => {
     navigation.navigate("ForgotPassword");
+  };
+  const navigateToSignup = () => {
+    navigation.navigate("Signup");
   };
   const isFormValid = () => {
     return email !== "" && password !== "";
@@ -71,15 +75,17 @@ const LoginScreen = () => {
                 <CustomText style={Global.small}>
                   Don't have an account?
                 </CustomText>
-                <CustomText style={styles.caption} weight="semibold">
-                  Sign Up
-                </CustomText>
+                <TouchableOpacity onPress={navigateToSignup}>
+                  <CustomText style={styles.caption} weight="semibold">
+                    Sign Up
+                  </CustomText>
+                </TouchableOpacity>
               </View>
-              <Button onPress={navigateToForgotPassword} type="clear">
+              <TouchableOpacity onPress={navigateToForgotPassword}>
                 <CustomText style={styles.forgot} weight="semibold">
                   Forgot Password?
                 </CustomText>
-              </Button>
+              </TouchableOpacity>
             </View>
             <View style={styles.divider}>
               <View style={styles.divide}></View>
