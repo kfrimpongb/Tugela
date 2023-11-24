@@ -4,7 +4,6 @@ import colors from "../colors";
 import { Fonts } from "../theme";
 import Header from "../components/Header";
 import Filter from "../components/Filter";
-import DemandJob from "../components/Jobs/DemandJob";
 
 const HomeScreen = () => {
   return (
@@ -19,9 +18,7 @@ const HomeScreen = () => {
       <View style={styles.check}>
         <Filter />
       </View>
-      <View style={styles.job}>
-        <DemandJob />
-      </View>
+      <View style={styles.job}></View>
     </SafeAreaView>
   );
 };

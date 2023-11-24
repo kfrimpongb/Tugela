@@ -2,18 +2,22 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./navigations/AppNavigator";
 import AuthProvider from "./context/AuthContext";
 import { StatusBar } from "expo-status-bar";
-import loadFonts from "./loadFonts";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import LoadFonts from "./loadFonts";
+
 export default function App() {
-  const fontLoaded = loadFonts();
-  if (!fontLoaded) {
+  const [fontsLoaded] = LoadFonts();
+  if (!fontsLoaded) {
     return null;
   }
   return (
-    <NavigationContainer>
-      <AuthProvider>
-        <StatusBar style="auto" />
-        <AppNavigator />
-      </AuthProvider>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <AuthProvider>
+          <StatusBar animated={true} style="auto" />
+          <AppNavigator />
+        </AuthProvider>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

@@ -1,279 +1,197 @@
-import React, { useState, useContext } from "react";
 import {
-  View,
-  Image,
-  TextInput,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   StyleSheet,
+  SafeAreaView,
+  Image,
+  KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  View,
+  TouchableOpacity,
 } from "react-native";
-import { Button } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import CustomText from "../../components/CustomText";
-import colors from "../../colors";
+import React, { useState } from "react";
+
+import fav from "../../assets/images/fav.png";
 import { Fonts } from "../../theme";
-import CheckBox from "../../components/CheckBox";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { AuthContext } from "../../context/AuthContext";
+import colors from "../../colors";
+import CustomText from "../../components/ui/Text";
+import { Global } from "../../globalStyles";
+import CustomInput from "../../components/Input";
+import CustomButton from "../../components/Button";
+import { useNavigation } from "@react-navigation/native";
+import { Button } from "@rneui/themed";
 
-const validationSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email("Please enter a valid email address")
-    .required("Email is required"),
-  password: yup
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Password is required"),
-});
 const LoginScreen = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigation = useNavigation();
-  const [isFocused, setFocused] = useState(false);
-  const [isFocusedPassword, setFocusedPassword] = useState(false);
-  const [checked, setChecked] = useState(false);
 
-  const authContext = useContext(AuthContext);
-  if (!authContext) {
-    throw new Error("LoginScreen must be used within an AuthProvider");
-  }
-  const { setUserAuthenticated } = authContext;
-  const handleCheckChange = (checked) => {
-    setChecked(checked);
-    console.log("Checkbox checked:", checked);
+  const navigateToForgotPassword = () => {
+    navigation.navigate("ForgotPassword");
+  };
+  const navigateToSignup = () => {
+    navigation.navigate("Signup");
+  };
+  const isFormValid = () => {
+    return email !== "" && password !== "";
   };
 
-  const navigateToSignUp = () => {
-    navigation.navigate("SignUp");
+  const handleEmailChange = (text) => {
+    setEmail(text);
   };
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationSchema,
-    onSubmit: () => {
-      if (formik.isValid) {
-        setUserAuthenticated(true);
-        navigation.navigate("Tab");
-      } else {
-        Alert.alert(
-          "Validation Error",
-          "Please fill in all the required fields."
-        );
-      }
-    },
-  });
+
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+  };
   return (
-    <View style={styles.container}>
-      <View style={styles.textContainer}>
-        <Image source={require("../../assets/images/login.png")} />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.title}>
+          <Image source={fav} style={styles.fav} />
+          <CustomText style={Global.h2} weight="medium">
+            Tugela
+          </CustomText>
+        </View>
+        <CustomText weight="medium" style={Global.h3}>
+          Sign In
+        </CustomText>
       </View>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView
-          style={styles.keyboardAvoidingView}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <View style={styles.formContainer}>
-            <TextInput
-              placeholder="Email Address"
-              value={formik.values.email}
-              onChangeText={formik.handleChange("email")}
-              style={isFocused ? styles.inputActive : styles.input}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              maxLength={40}
+      <TouchableWithoutFeedback>
+        <KeyboardAvoidingView style={styles.form}>
+          <View>
+            <CustomInput
+              type="Email"
+              label="Email"
+              placeholder={"Enter your email address"}
+              onChangeText={handleEmailChange}
             />
-            {formik.touched.email && formik.errors.email && (
-              <CustomText style={styles.errorText}>
-                {formik.errors.email}
-              </CustomText>
-            )}
-            <View style={styles.formPass}>
-              <View style={styles.passInput}>
-                <TextInput
-                  secureTextEntry
-                  placeholder="Password"
-                  value={formik.values.password}
-                  onChangeText={formik.handleChange("password")}
-                  style={
-                    isFocusedPassword ? styles.inputActive1 : styles.input1
-                  }
-                  onFocus={() => setFocusedPassword(true)}
-                  onBlur={() => setFocusedPassword(false)}
-                />
-                {formik.touched.password && formik.errors.password && (
-                  <CustomText style={styles.errorText}>
-                    {formik.errors.password}
+            <CustomInput
+              type="Password"
+              label="Password"
+              placeholder={"Enter your password"}
+              onChangeText={handlePasswordChange}
+            />
+            <CustomButton title={"Sign In"} disabled={isFormValid()} />
+            <View style={styles.account}>
+              <View style={styles.signup}>
+                <CustomText style={Global.small}>
+                  Don't have an account?
+                </CustomText>
+                <TouchableOpacity onPress={navigateToSignup}>
+                  <CustomText style={styles.caption} weight="semibold">
+                    Sign Up
                   </CustomText>
-                )}
+                </TouchableOpacity>
               </View>
-              <Button
-                mode="text"
-                style={styles.textButton}
-                labelStyle={styles.labelButton}
-              >
-                Forgot?
-              </Button>
+              <TouchableOpacity onPress={navigateToForgotPassword}>
+                <CustomText style={styles.forgot} weight="semibold">
+                  Forgot Password?
+                </CustomText>
+              </TouchableOpacity>
             </View>
-            <View style={styles.check}>
-              <CheckBox
-                label="Remember Me"
-                isChecked={checked}
-                onCheckChange={handleCheckChange}
-              />
-            </View>
-            <View style={styles.buttonGroup}>
-              <Button
-                mode="contained"
-                buttonColor={colors.primary}
-                style={styles.button}
-                labelStyle={styles.buttonText}
-                onPress={() => formik.handleSubmit()}
+            <View style={styles.divider}>
+              <View style={styles.divide}></View>
+              <CustomText
+                style={{ fontSize: 14, color: colors.text }}
+                weight="medium"
               >
-                Sign In
-              </Button>
-              <Button
-                mode="outlined"
-                style={styles.button1}
-                labelStyle={styles.buttonText1}
-                onPress={navigateToSignUp}
-              >
-                Sign Up
-              </Button>
+                or
+              </CustomText>
+              <View style={styles.divide}></View>
             </View>
+            <CustomButton
+              title={"Sign in with Google"}
+              disabled={false}
+              icon={"google"}
+              iconColor={colors.primary}
+              buttonStyle={styles.button}
+              titleStyle={styles.buttonText}
+            />
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-    </View>
+    </SafeAreaView>
   );
 };
+
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.background,
+    fontFamily: Fonts.regular,
+    justifyContent: "space-between",
+    flexDirection: "column",
+    height: "100%",
+    width: "100%",
   },
-  textContainer: {
-    flex: 0.4,
+  header: {
+    flex: 3,
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.background,
   },
-  formContainer: {
-    flex: 0.6,
-    marginHorizontal: 22,
-    marginVertical: 45,
+  fav: {
+    width: 50,
+    height: 50,
+    marginRight: 4,
   },
-  passInput: {
-    width: "60%",
+  text: {
+    fontFamily: Fonts.bold,
+    fontSize: 24,
   },
-  errorText: {
-    color: colors.danger,
-    marginVertical: 6,
+  form: {
+    flex: 7,
+    fontFamily: Fonts.medium,
+    paddingHorizontal: 16,
   },
-  formPass: {
+  title: {
     flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
-    justifyContent: "space-between",
+    paddingBottom: 20,
   },
-  check: {
-    marginTop: 45,
-  },
-  textButton: {
-    color: colors.danger,
-  },
-  labelButton: {
-    fontSize: 16,
-    color: colors.danger,
-    textDecorationLine: "underline",
-    textDecorationColor: colors.danger,
-    textDecorationStyle: "dotted",
-  },
-  input: {
-    height: 60,
-    paddingHorizontal: 14,
-    fontSize: 20,
-    fontFamily: Fonts.regular,
-    marginVertical: 10,
-  },
-  inputActive: {
-    height: 60,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.space,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    paddingHorizontal: 14,
-    fontSize: 20,
-    fontFamily: Fonts.medium,
-    elevation: 5,
-  },
-  input1: {
-    height: 60,
-    paddingHorizontal: 14,
-    fontSize: 20,
-    fontFamily: Fonts.regular,
-    marginVertical: 14,
-    width: "75%",
-  },
-  inputActive1: {
-    width: "75%",
-    height: 60,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.space,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    paddingHorizontal: 14,
-    fontSize: 20,
-    fontFamily: Fonts.medium,
-    elevation: 5,
-  },
-  keyboardAvoidingView: {
-    flex: 0.3,
-  },
-  buttonGroup: {
+  account: {
     flexDirection: "row",
-    marginVertical: 10,
     width: "100%",
     justifyContent: "space-between",
-    marginVertical: 60,
+    alignItems: "center",
+    paddingVertical: 32,
+  },
+  signup: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  caption: {
+    color: colors.primary,
+    fontSize: 14,
+    paddingLeft: 4,
+  },
+  forgot: {
+    color: colors.primary,
+    fontSize: 14,
+    textDecorationLine: "underline",
+  },
+  divider: {
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 8,
+  },
+  divide: {
+    width: "40%",
+    borderWidth: 0.3,
+    color: colors.borderColor,
   },
   button: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 70,
-    width: "44%",
-  },
-  button1: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 70,
-    width: "48%",
-    borderRadius: 50,
+    backgroundColor: colors.background,
+    borderWidth: 1,
     borderColor: colors.primary,
-    borderWidth: 3,
+    marginTop: 16,
   },
   buttonText: {
-    fontSize: 16,
-    fontFamily: Fonts.semiBold,
-  },
-  buttonText1: {
-    fontSize: 16,
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.medium,
     color: colors.primary,
   },
 });
-
-export default LoginScreen;

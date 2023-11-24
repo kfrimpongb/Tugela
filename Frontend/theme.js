@@ -1,7 +1,8 @@
 export const Fonts = {
-  regular: "Montserrat_400Regular",
-  medium: "Montserrat_500Medium",
-  semiBold: "Montserrat_600SemiBold",
-  bold: "Montserrat_700Bold",
-  extraBold: "Montserrat_800ExtraBold",
+  light: "Poppins_300Light",
+  regular: "Poppins_400Regular",
+  medium: "Poppins_500Medium",
+  semibold: "Poppins_600SemiBold",
+  bold: "Poppins_700Bold",
+  extrabold: "Poppins_800ExtraBold",
 };

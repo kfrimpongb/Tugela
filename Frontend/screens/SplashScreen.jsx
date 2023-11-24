@@ -1,40 +1,45 @@
-import { View, StyleSheet, SafeAreaView, Image } from "react-native";
-import React from "react";
+import { StyleSheet, SafeAreaView, Image, View } from "react-native";
+import React, { useState } from "react";
 import colors from "../colors";
-import CustomText from "../components/CustomText";
-import { Button } from "react-native-paper";
-import { Fonts } from "../theme";
+
 import { useNavigation } from "@react-navigation/native";
+import { Button } from "@rneui/themed";
+import CustomText from "../components/ui/Text";
+import onboard from "../assets/images/onboard.jpg";
+import fav from "../assets/images/fav.png";
+import { Fonts } from "../theme";
+import { Global } from "../globalStyles";
+import CustomButton from "../components/Button";
 
 const SplashScreen = () => {
   const navigation = useNavigation();
 
   const navigateToLogin = () => {
-    navigation.navigate("Login");
+    setTimeout(() => {
+      navigation.navigate("Login");
+    }, 2000);
   };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.textContainer}>
-        <CustomText weight="semiBold" style={styles.text}>
-          Work from
-        </CustomText>
-        <CustomText weight="semiBold" style={styles.text}>
-          Anywhere...Anytime
-        </CustomText>
+      <View style={styles.Images}>
+        <Image source={onboard} style={styles.image} />
+        <Image source={fav} style={styles.fav} />
       </View>
-      <View style={styles.imageContainer}>
-        <Image source={require("../assets/images/splash.png")} />
+      <View style={styles.content}>
+        <CustomText style={Global.h1} weight="medium">
+          Tugela
+        </CustomText>
+        <CustomText style={Global.h4}>Work from</CustomText>
+        <CustomText style={Global.h4}>Anywhere.....Anytime</CustomText>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
-          buttonColor={colors.primary}
-          style={styles.button}
-          labelStyle={styles.buttonText}
+      <View style={styles.Button}>
+        <CustomButton
+          title={"Get Started"}
           onPress={navigateToLogin}
-        >
-          Get Started
-        </Button>
+          disabled={false}
+          size="lg"
+        />
       </View>
     </SafeAreaView>
   );
@@ -47,34 +52,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     fontFamily: Fonts.regular,
-  },
-  textContainer: {
-    flex: 0.3,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "column",
+    height: "100%",
+    width: "100%",
   },
   text: {
-    fontSize: 24,
-    color: colors.white,
-    marginVertical: 4,
+    fontFamily: Fonts.bold,
   },
-  imageContainer: {
-    flex: 0.4,
+
+  image: {
+    width: "100%",
+    height: "100%",
   },
-  buttonContainer: {
-    flex: 0.3,
-    justifyContent: "flex-end",
-    marginHorizontal: 14,
-    paddingBottom: 10,
+  fav: {
+    width: 70,
+    height: 70,
+    position: "absolute",
+    bottom: 0,
+    marginVertical: -45,
   },
-  button: {
-    flexDirection: "row",
+  Images: {
+    flex: 5,
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    height: 70,
   },
-  buttonText: {
-    fontSize: 18,
-    fontFamily: Fonts.semiBold,
+  content: {
+    flex: 3,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  Button: {
+    paddingHorizontal: 24,
+    paddingBottom: 20,
   },
 });
