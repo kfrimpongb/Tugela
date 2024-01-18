@@ -5,12 +5,15 @@ import {
   Button,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import PagerView from "react-native-pager-view";
 import Freelancer from "./Freelancer";
 import Client from "./Client";
 import colors from "../../colors";
 import CustomText from "../../components/ui/Text";
+import CustomInput from "../../components/Input";
+import CustomButton from "../../components/Button";
 import { Global } from "../../globalStyles";
 import avata from "../../assets/images/profile.png";
 import edit from "../../assets/images/edit.png";
@@ -19,7 +22,12 @@ import * as ImagePicker from "expo-image-picker";
 const Onboarding = () => {
   const pagerRef = useRef(null);
   const [initialPage, setInitialPage] = useState(0);
+  const [name, setName] = useState("");
   const [image, setImage] = useState(avata);
+
+  const handleNameChange = (text) => {
+    setName(text);
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -57,11 +65,23 @@ const Onboarding = () => {
           <View style={styles.upload}>
             {image && <Image source={image} style={styles.image} />}
             <TouchableOpacity style={styles.edit} onPress={pickImage}>
-              <CustomText>Add Photo</CustomText>
+              <CustomText weight="medium" style={styles.text}>
+                Add Photo
+              </CustomText>
             </TouchableOpacity>
           </View>
         </View>
-        <Button onPress={moveToNext} title="Next" />
+        <KeyboardAvoidingView style={styles.form}>
+          <CustomInput
+            type="Text"
+            label="Full Name"
+            placeholder={"Enter your full name"}
+            onChangeText={handleNameChange}
+          />
+        </KeyboardAvoidingView>
+        <View style={styles.button}>
+          <CustomButton title={"Continue"} onPress={moveToNext} />
+        </View>
       </View>
       <Freelancer key="1" />
       <Client key="2" />
@@ -79,6 +99,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
+    justifyContent: "space-between",
     margin: 20,
   },
   profile: {
@@ -86,14 +107,22 @@ const styles = StyleSheet.create({
   },
   upload: {
     display: "flex",
-    width: "auto",
     justifyContent: "center",
     alignItems: "center",
+    marginVertical: 40,
   },
   image: {
     width: 180,
     height: 180,
     borderRadius: 200,
   },
-  edit: {},
+  text: {
+    fontSize: 18,
+    color: colors.primary,
+  },
+  form: {
+    flex: 2,
+    flexDirection: "column",
+    marginVertical: 20,
+  },
 });

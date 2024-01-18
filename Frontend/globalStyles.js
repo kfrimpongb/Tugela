@@ -30,6 +30,10 @@ export const Global = StyleSheet.create({
     fontSize: 16,
     color: colors.text,
   },
+  h6: {
+    fontSize: 18,
+    color: colors.title,
+  },
   buttonText: {
     fontFamily: Fonts.semibold,
     fontSize: 16,
