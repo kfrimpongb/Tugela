@@ -6,8 +6,8 @@ import SignUpScreen from "../screens/auth/SignUpScreen";
 import ForgotPassword from "../screens/auth/ForgotPassword";
 import ResetPassword from "../screens/auth/ResetPassword";
 import OTPVerification from "../screens/auth/OTPVerification";
-import Onboarding from "../screens/auth/Onboarding";
 import Back from "../components/ui/Back";
+import Onboarding from "../screens/auth/Onboarding";
 const Stack = createStackNavigator();
 const AuthNavigator = () => {
   return (
