@@ -18,17 +18,18 @@ import { Global } from "../../globalStyles";
 import avata from "../../assets/images/profile.png";
 import edit from "../../assets/images/edit.png";
 import * as ImagePicker from "expo-image-picker";
-
+import DropdownSelect from "react-native-input-select";
+import { Fonts } from "../../theme";
 const Onboarding = () => {
   const pagerRef = useRef(null);
   const [initialPage, setInitialPage] = useState(0);
   const [name, setName] = useState("");
   const [image, setImage] = useState(avata);
+  const [usertype, setUsertype] = useState("");
 
   const handleNameChange = (text) => {
     setName(text);
   };
-
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -78,6 +79,49 @@ const Onboarding = () => {
             placeholder={"Enter your full name"}
             onChangeText={handleNameChange}
           />
+          <DropdownSelect
+            label="Select User Type"
+            placeholder="Select"
+            options={[
+              { label: "Freelancer", value: "1" },
+              { label: "Client", value: "2" },
+            ]}
+            selectedValue={usertype}
+            onValueChange={(itemValue) => setUsertype(itemValue)}
+            placeholderStyle={{
+              color: "purple",
+              fontSize: 15,
+              fontWeight: "500",
+            }}
+            labelStyle={{
+              color: colors.label,
+              fontSize: 14,
+              fontFamily: Fonts.regular,
+            }}
+            dropdownHelperTextStyle={{
+              color: "green",
+              fontWeight: "900",
+            }}
+            modalBackgroundStyle={{
+              backgroundColor: "rgba(196, 198, 246, 0.5)",
+            }}
+            helperText="The placeholder has been styled"
+            checkboxComponent={<View style={styles.radioButton} />}
+            checkboxComponentStyles={{
+              checkboxSize: 15,
+              checkboxStyle: {
+                backgroundColor: "purple",
+                borderRadius: 30, // To get a circle - add the checkboxSize and the padding size
+                padding: 5,
+                borderColor: "red",
+              },
+              checkboxLabelStyle: { color: "red", fontSize: 20 },
+            }}
+            selectedItemStyle={{
+              color: "hotpink",
+              fontWeight: "900",
+            }}
+          />
         </KeyboardAvoidingView>
         <View style={styles.button}>
           <CustomButton title={"Continue"} onPress={moveToNext} />
@@ -119,6 +163,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     color: colors.primary,
+    marginTop: 10,
   },
   form: {
     flex: 2,
