@@ -86,41 +86,15 @@ const Onboarding = () => {
               { label: "Freelancer", value: "1" },
               { label: "Client", value: "2" },
             ]}
+            dropdownStyle={styles.dropdownStyle}
             selectedValue={usertype}
             onValueChange={(itemValue) => setUsertype(itemValue)}
-            placeholderStyle={{
-              color: "purple",
-              fontSize: 15,
-              fontWeight: "500",
-            }}
-            labelStyle={{
-              color: colors.label,
-              fontSize: 14,
-              fontFamily: Fonts.regular,
-            }}
-            dropdownHelperTextStyle={{
-              color: "green",
-              fontWeight: "900",
-            }}
-            modalBackgroundStyle={{
-              backgroundColor: "rgba(196, 198, 246, 0.5)",
-            }}
-            helperText="The placeholder has been styled"
-            checkboxComponent={<View style={styles.radioButton} />}
-            checkboxComponentStyles={{
-              checkboxSize: 15,
-              checkboxStyle: {
-                backgroundColor: "purple",
-                borderRadius: 30, // To get a circle - add the checkboxSize and the padding size
-                padding: 5,
-                borderColor: "red",
-              },
-              checkboxLabelStyle: { color: "red", fontSize: 20 },
-            }}
-            selectedItemStyle={{
-              color: "hotpink",
-              fontWeight: "900",
-            }}
+            placeholderStyle={styles.placeholderStyle}
+            labelStyle={styles.labelStyle}
+            checkboxStyle={styles.checkBox}
+            checkboxLabelStyle={styles.checkBoxLabel}
+            modalBackgroundStyle={styles.modalBackground}
+            selectedItemStyle={styles.selectedItems}
           />
         </KeyboardAvoidingView>
         <View style={styles.button}>
@@ -169,5 +143,49 @@ const styles = StyleSheet.create({
     flex: 2,
     flexDirection: "column",
     marginVertical: 20,
+  },
+  radioButton: {
+    width: 16,
+    height: 16,
+    borderRadius: 20 / 2,
+    borderWidth: 1,
+    borderColor: colors.borderColor,
+  },
+  selectedItems: {
+    color: colors.title,
+    fontSize: 14,
+    fontFamily: Fonts.regular,
+  },
+  modalBackground: {
+    backgroundColor: "rgba(0 , 0, 0, 0.25)",
+  },
+  checkBoxLabel: {
+    fontSize: 18,
+    fontFamily: Fonts.regular,
+    paddingVertical: 16,
+    paddingHorizontal: 4,
+    color: colors.label,
+  },
+  checkBox: {
+    backgroundColor: colors.primary,
+    borderColor: colors.borderColor,
+    borderWidth: 2,
+    borderRadius: 8,
+  },
+  labelStyle: {
+    color: colors.label,
+    fontSize: 14,
+    fontFamily: Fonts.regular,
+    marginBottom: 8,
+  },
+  placeholderStyle: {
+    color: colors.text,
+    fontSize: 15,
+    fontWeight: "500",
+  },
+  dropdownStyle: {
+    backgroundColor: colors.background,
+    borderColor: colors.borderColor,
+    height: 56,
   },
 });
