@@ -17,13 +17,17 @@ import { Global } from "../../globalStyles";
 import CustomInput from "../../components/Input";
 import CustomButton from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
+import { useMutation } from "@apollo/client";
+import { CREATE_USER } from "../../utils/mutations";
 
 const SignUpScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [createUserMutation] = useMutation(CREATE_USER);
   const navigation = useNavigation();
 
   const navigateToOtp = () => {
+    createUser();
     navigation.navigate("OTP");
   };
   const navigateToLogin = () => {
@@ -39,6 +43,25 @@ const SignUpScreen = () => {
 
   const handlePasswordChange = (text) => {
     setPassword(text);
+  };
+
+  const createUser = async () => {
+    try {
+      const { data } = await createUserMutation({
+        variables: {
+          input: {
+            email,
+            password,
+          },
+        },
+      });
+
+      // Handle the response data (e.g., show a success message)
+      console.log("User created:", data.createUser);
+    } catch (error) {
+      // Handle errors (e.g., display an error message)
+      console.error("Error creating user:", error.message);
+    }
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -61,17 +84,19 @@ const SignUpScreen = () => {
               label="Email"
               placeholder={"Enter your email address"}
               onChangeText={handleEmailChange}
+              value={email}
             />
             <CustomInput
               type="Password"
               label="Password"
               placeholder={"Enter your password"}
               onChangeText={handlePasswordChange}
+              value={password}
             />
             <CustomButton
               title={"Create an account"}
               disabled={isFormValid()}
-              onPress={navigateToOtp}
+              onPress={createUser}
             />
             <View style={styles.account}>
               <View style={styles.signup}>

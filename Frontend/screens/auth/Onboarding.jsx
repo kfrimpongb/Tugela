@@ -5,6 +5,9 @@ import {
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  TouchableWithoutFeedback,
 } from "react-native";
 import PagerView from "react-native-pager-view";
 import Freelancer from "./Freelancer";
@@ -88,6 +91,7 @@ const Onboarding = () => {
       setInitialPage(initialPage + 1);
     }
   };
+  const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0;
   return (
     <PagerView
       ref={pagerRef}
@@ -95,57 +99,72 @@ const Onboarding = () => {
       initialPage={initialPage}
       scrollEnabled={true}
     >
-      <View key="0" style={styles.container}>
-        <View style={styles.profile}>
-          <CustomText weight="medium" style={Global.h2}>
-            Profile Update
-          </CustomText>
-          <View style={styles.upload}>
-            {image && <Image source={image} style={styles.image} />}
-            <TouchableOpacity style={styles.edit} onPress={handleImagePicker}>
-              <CustomText weight="medium" style={styles.text}>
-                Add Photo
-              </CustomText>
-            </TouchableOpacity>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={keyboardVerticalOffset}
+        key="0"
+        style={styles.container}
+      >
+        <ScrollView
+          keyboardDismissMode="interactive"
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}
+          ref={(scrollView) => {
+            this.scrollView = scrollView;
+          }}
+          showsVerticalScrollIndicator="false"
+        >
+          <View style={styles.profile}>
+            <CustomText weight="medium" style={Global.h2}>
+              Profile Update
+            </CustomText>
+            <View style={styles.upload}>
+              {image && <Image source={image} style={styles.image} />}
+              <TouchableOpacity style={styles.edit} onPress={handleImagePicker}>
+                <CustomText weight="medium" style={styles.text}>
+                  Add Photo
+                </CustomText>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <KeyboardAvoidingView style={styles.form}>
-          <CustomInput
-            type="Text"
-            label="Full Name"
-            placeholder={"Enter your full name"}
-            onChange={handleNameChange}
-            value={name}
-          />
-          <DropdownSelect
-            label="Select User Type"
-            placeholder="Select"
-            options={[
-              { label: "Freelancer", value: "1" },
-              { label: "Client", value: "2" },
-            ]}
-            dropdownStyle={styles.dropdownStyle}
-            selectedValue={usertype}
-            onValueChange={(itemValue) => {
-              setUsertype(itemValue);
-              validateForm();
-            }}
-            placeholderStyle={styles.placeholderStyle}
-            labelStyle={styles.labelStyle}
-            checkboxStyle={styles.checkBox}
-            checkboxLabelStyle={styles.checkBoxLabel}
-            modalBackgroundStyle={styles.modalBackground}
-            selectedItemStyle={styles.selectedItems}
-          />
-        </KeyboardAvoidingView>
-        <View style={styles.button}>
-          <CustomButton
-            title={"Continue"}
-            disabled={!isFormValid}
-            onPress={moveToNext}
-          />
-        </View>
-      </View>
+          <View style={styles.form}>
+            <CustomInput
+              type="Text"
+              label="Full Name"
+              placeholder={"Enter your full name"}
+              onChange={handleNameChange}
+              value={name}
+            />
+            <DropdownSelect
+              label="Select User Type"
+              placeholder="Select"
+              options={[
+                { label: "Freelancer", value: "1" },
+                { label: "Client", value: "2" },
+              ]}
+              dropdownStyle={styles.dropdownStyle}
+              selectedValue={usertype}
+              onValueChange={(itemValue) => {
+                setUsertype(itemValue);
+                validateForm();
+              }}
+              placeholderStyle={styles.placeholderStyle}
+              labelStyle={styles.labelStyle}
+              checkboxStyle={styles.checkBox}
+              checkboxLabelStyle={styles.checkBoxLabel}
+              modalBackgroundStyle={styles.modalBackground}
+              selectedItemStyle={styles.selectedItems}
+            />
+          </View>
+          <View style={styles.button}>
+            <CustomButton
+              title={"Continue"}
+              disabled={!isFormValid}
+              onPress={moveToNext}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <Freelancer key="1" />
       <Client key="2" />
     </PagerView>
@@ -165,6 +184,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     margin: 20,
   },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+  },
   profile: {
     width: "100%",
   },
@@ -182,7 +205,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     color: colors.primary,
-    marginTop: 10,
+    marginTop: 4,
   },
   form: {
     flex: 2,

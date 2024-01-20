@@ -4,21 +4,27 @@ import AuthProvider from "./context/AuthContext";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import LoadFonts from "./loadFonts";
-import * as Device from "expo-device";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
+const client = new ApolloClient({
+  uri: "http://54.170.109.42/graphql",
+  cache: new InMemoryCache(),
+});
 export default function App() {
   const [fontsLoaded] = LoadFonts();
   if (!fontsLoaded) {
     return null;
   }
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <AuthProvider>
-          <StatusBar animated={true} style="auto" />
-          <AppNavigator />
-        </AuthProvider>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <ApolloProvider client={client}>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <AuthProvider>
+            <StatusBar animated={true} style="auto" />
+            <AppNavigator />
+          </AuthProvider>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </ApolloProvider>
   );
 }
