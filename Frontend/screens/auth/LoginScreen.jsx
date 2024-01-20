@@ -56,7 +56,7 @@ const LoginScreen = () => {
         },
       });
 
-      console.log("Login successful:", response.data.loginUser);
+      console.log("Login successful:", response.data.login);
       // Handle successful login (e.g., navigate to another screen, store the token)
     } catch (err) {
       console.error("Error logging in:", err);

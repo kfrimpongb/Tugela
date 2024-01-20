@@ -57,7 +57,7 @@ const SignUpScreen = () => {
     console.log(name, email, password);
 
     try {
-      const { data } = await createUserMutation({
+      const data = await createUserMutation({
         variables: {
           input: {
             name,
@@ -67,7 +67,7 @@ const SignUpScreen = () => {
         },
       });
 
-      console.log("User created:", data.createUser);
+      console.log("User created:", data.register);
       navigation.navigate("OTP");
     } catch (error) {
       console.error("Error creating user:", error.message);
