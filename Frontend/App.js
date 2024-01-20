@@ -4,6 +4,7 @@ import AuthProvider from "./context/AuthContext";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import LoadFonts from "./loadFonts";
+import * as Device from "expo-device";
 
 export default function App() {
   const [fontsLoaded] = LoadFonts();

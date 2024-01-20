@@ -6,8 +6,15 @@ import colors from "../colors";
 import { Fonts } from "../theme";
 import { Global } from "../globalStyles";
 
-const CustomInput = ({ type, placeholder, label, leftIcon, rightIcon }) => {
-  const [value, setValue] = useState("");
+const CustomInput = ({
+  type,
+  placeholder,
+  label,
+  leftIcon,
+  rightIcon,
+  value,
+  onChange,
+}) => {
   const [error, setError] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -15,6 +22,10 @@ const CustomInput = ({ type, placeholder, label, leftIcon, rightIcon }) => {
     let errorMessage = "";
 
     switch (type) {
+      case "Text":
+        const isTextValid = text.trim() !== "";
+        if (!isTextValid) errorMessage = "Text cannot be empty";
+        break;
       case "Email":
         const emailRegex = /\S+@\S+\.\S+/;
         if (!emailRegex.test(text)) errorMessage = "Invalid email address";
@@ -52,7 +63,7 @@ const CustomInput = ({ type, placeholder, label, leftIcon, rightIcon }) => {
   const handleChangeText = (text) => {
     const errorMessage = validateInput(text);
     setError(errorMessage);
-    setValue(text);
+    onChange(text);
   };
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible); // Toggles the state
@@ -139,7 +150,7 @@ const styles = StyleSheet.create({
   inputText: {
     fontFamily: Fonts.regular,
     fontSize: 14,
-    color: colors.text,
+    color: colors.title,
     margin: 0,
   },
 });

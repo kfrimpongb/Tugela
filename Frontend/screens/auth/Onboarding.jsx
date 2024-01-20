@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import {
   View,
   StyleSheet,
-  Button,
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
@@ -16,38 +15,76 @@ import CustomInput from "../../components/Input";
 import CustomButton from "../../components/Button";
 import { Global } from "../../globalStyles";
 import avata from "../../assets/images/profile.png";
-import edit from "../../assets/images/edit.png";
 import * as ImagePicker from "expo-image-picker";
 import DropdownSelect from "react-native-input-select";
 import { Fonts } from "../../theme";
+
 const Onboarding = () => {
   const pagerRef = useRef(null);
   const [initialPage, setInitialPage] = useState(0);
   const [name, setName] = useState("");
   const [image, setImage] = useState(avata);
   const [usertype, setUsertype] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
 
-  const handleNameChange = (text) => {
-    setName(text);
-  };
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const handleImagePicker = async () => {
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    console.log(result);
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+        return;
+      }
 
-    if (!result.canceled) {
-      setImage({ uri: result.uri });
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log(result);
+
+      if (!result.canceled) {
+        setImage({ uri: result.assets[0].uri });
+        validateForm();
+      }
+    } catch (error) {
+      console.error("Error picking an image: ", error);
     }
   };
 
+  const validateForm = () => {
+    const isNameValid = name.trim() !== "";
+    const isUsertypeValid = usertype !== "";
+    const isImageValid = !!image.uri;
+
+    const isValid = isNameValid && isUsertypeValid && isImageValid;
+    setIsFormValid(isValid);
+
+    console.log("Name valid:", isNameValid);
+    console.log("Usertype valid:", isUsertypeValid);
+    console.log("Image valid:", isImageValid);
+    console.log("Form valid:", isValid);
+  };
+
+  const handleNameChange = (text) => {
+    console.log("Input Text:", text);
+    setName(text);
+    validateForm();
+  };
+
   const moveToNext = () => {
-    if (pagerRef.current) {
-      pagerRef.current.setPage(initialPage + 1);
+    if (isFormValid && pagerRef.current) {
+      if (usertype === "1") {
+        pagerRef.current.setPage(1);
+      } else if (usertype === "2") {
+        pagerRef.current.setPage(2);
+      } else {
+        pagerRef.current.setPage(initialPage + 1);
+      }
+
       setInitialPage(initialPage + 1);
     }
   };
@@ -65,7 +102,7 @@ const Onboarding = () => {
           </CustomText>
           <View style={styles.upload}>
             {image && <Image source={image} style={styles.image} />}
-            <TouchableOpacity style={styles.edit} onPress={pickImage}>
+            <TouchableOpacity style={styles.edit} onPress={handleImagePicker}>
               <CustomText weight="medium" style={styles.text}>
                 Add Photo
               </CustomText>
@@ -77,7 +114,8 @@ const Onboarding = () => {
             type="Text"
             label="Full Name"
             placeholder={"Enter your full name"}
-            onChangeText={handleNameChange}
+            onChange={handleNameChange}
+            value={name}
           />
           <DropdownSelect
             label="Select User Type"
@@ -88,7 +126,10 @@ const Onboarding = () => {
             ]}
             dropdownStyle={styles.dropdownStyle}
             selectedValue={usertype}
-            onValueChange={(itemValue) => setUsertype(itemValue)}
+            onValueChange={(itemValue) => {
+              setUsertype(itemValue);
+              validateForm();
+            }}
             placeholderStyle={styles.placeholderStyle}
             labelStyle={styles.labelStyle}
             checkboxStyle={styles.checkBox}
@@ -98,7 +139,11 @@ const Onboarding = () => {
           />
         </KeyboardAvoidingView>
         <View style={styles.button}>
-          <CustomButton title={"Continue"} onPress={moveToNext} />
+          <CustomButton
+            title={"Continue"}
+            disabled={!isFormValid}
+            onPress={moveToNext}
+          />
         </View>
       </View>
       <Freelancer key="1" />
