@@ -21,6 +21,7 @@ import CustomButton from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@apollo/client";
 import { CREATE_USER } from "../../utils/mutations";
+import google from "../../assets/images/google.png";
 
 const SignUpScreen = () => {
   const [name, setName] = useState("");
@@ -77,81 +78,86 @@ const SignUpScreen = () => {
   const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0;
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.title}>
-          <Image source={fav} style={styles.fav} />
-          <CustomText style={Global.h2} weight="medium">
-            Tugela
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <View style={styles.title}>
+            <Image source={fav} style={styles.fav} />
+            <CustomText style={Global.h2} weight="medium">
+              Tugela
+            </CustomText>
+          </View>
+          <CustomText weight="regular" style={Global.h4}>
+            Create an account
           </CustomText>
         </View>
-        <CustomText weight="medium" style={Global.h3}>
-          Create an account
-        </CustomText>
-      </View>
-      <TouchableWithoutFeedback>
-        <KeyboardAvoidingView
-          style={styles.form}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={keyboardVerticalOffset}
-        >
-          <CustomInput
-            type="Text"
-            label="Full Name"
-            placeholder="Enter your name"
-            onChange={handleNameChange}
-            value={name}
-          />
-          <CustomInput
-            type="Email"
-            label="Email"
-            placeholder={"Enter your email address"}
-            onChange={handleEmailChange}
-            value={email}
-          />
-          <CustomInput
-            type="Password"
-            label="Password"
-            placeholder={"Enter your password"}
-            onChange={handlePasswordChange}
-            value={password}
-          />
-          <CustomButton
-            title={"Create an account"}
-            disabled={!isFormValid()}
-            onPress={createUser}
-          />
-          <View style={styles.account}>
-            <View style={styles.signup}>
-              <CustomText style={Global.small}>
-                Already have an account?
-              </CustomText>
-              <TouchableOpacity onPress={navigateToLogin}>
-                <CustomText style={styles.caption} weight="semibold">
-                  Sign In
+        <TouchableWithoutFeedback>
+          <KeyboardAvoidingView
+            style={styles.form}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={keyboardVerticalOffset}
+          >
+            <CustomInput
+              type="Text"
+              label="Full Name"
+              placeholder="Enter your name"
+              onChange={handleNameChange}
+              value={name}
+            />
+            <CustomInput
+              type="Email"
+              label="Email"
+              placeholder={"Enter your email address"}
+              onChange={handleEmailChange}
+              value={email}
+            />
+            <CustomInput
+              type="Password"
+              label="Password"
+              placeholder={"Enter your password"}
+              onChange={handlePasswordChange}
+              value={password}
+            />
+            <CustomButton
+              title={"Create an account"}
+              disabled={!isFormValid()}
+              onPress={createUser}
+            />
+            <View style={styles.account}>
+              <View style={styles.signup}>
+                <CustomText style={Global.small}>
+                  Already have an account?
                 </CustomText>
-              </TouchableOpacity>
+                <TouchableOpacity onPress={navigateToLogin}>
+                  <CustomText style={styles.caption} weight="semibold">
+                    Sign In
+                  </CustomText>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-          <View style={styles.divider}>
-            <View style={styles.divide}></View>
-            <CustomText
-              style={{ fontSize: 14, color: colors.text }}
-              weight="medium"
-            >
-              or
-            </CustomText>
-            <View style={styles.divide}></View>
-          </View>
-          <CustomButton
-            title={"Sign in with Google"}
-            disabled={false}
-            icon={"google"}
-            iconColor={colors.primary}
-            buttonStyle={styles.button}
-            titleStyle={styles.buttonText}
-          />
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+            <View style={styles.divider}>
+              <View style={styles.divide}></View>
+              <CustomText
+                style={{ fontSize: 14, color: colors.text }}
+                weight="medium"
+              >
+                or
+              </CustomText>
+              <View style={styles.divide}></View>
+            </View>
+            <CustomButton
+              title={"Sign in with Google"}
+              disabled={false}
+              icon={google}
+              iconColor={colors.primary}
+              buttonStyle={styles.button}
+              titleStyle={styles.buttonText}
+            />
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -167,6 +173,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+    flexDirection: "column",
+    paddingVertical: 40,
   },
   header: {
     flex: 3,
@@ -187,6 +199,7 @@ const styles = StyleSheet.create({
     flex: 7,
     fontFamily: Fonts.medium,
     paddingHorizontal: 16,
+    marginVertical: 40,
   },
   title: {
     flexDirection: "row",

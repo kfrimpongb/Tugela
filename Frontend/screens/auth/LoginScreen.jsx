@@ -72,7 +72,7 @@ const LoginScreen = () => {
             Tugela
           </CustomText>
         </View>
-        <CustomText weight="medium" style={Global.h3}>
+        <CustomText weight="regular" style={Global.h4}>
           Sign In
         </CustomText>
       </View>
