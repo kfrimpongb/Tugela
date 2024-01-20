@@ -26,6 +26,10 @@ const CustomInput = ({
         const isTextValid = text.trim() !== "";
         if (!isTextValid) errorMessage = "Text cannot be empty";
         break;
+      case "TextArea":
+        const isTextAreaValid = text.trim() !== "";
+        if (!isTextAreaValid) errorMessage = "Text area cannot be empty";
+        break;
       case "Email":
         const emailRegex = /\S+@\S+\.\S+/;
         if (!emailRegex.test(text)) errorMessage = "Invalid email address";
@@ -87,6 +91,11 @@ const CustomInput = ({
         return { keyboardType: "numeric" };
       case "PhoneNumber":
         return { keyboardType: "phone-pad" };
+      case "TextArea":
+        return {
+          multiline: true,
+          numberOfLines: 5,
+        };
       default:
         return {};
     }
@@ -95,7 +104,10 @@ const CustomInput = ({
   return (
     <Input
       containerStyle={styles.inputContainer}
-      inputContainerStyle={styles.input}
+      inputContainerStyle={[
+        styles.input,
+        type === "TextArea" && styles.textAreaInput,
+      ]}
       value={value}
       onChangeText={handleChangeText}
       errorMessage={error}
@@ -133,6 +145,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     width: "100%",
     paddingHorizontal: 0,
+    marginVertical: 4,
   },
   inputError: {
     color: colors.danger,
@@ -152,5 +165,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.title,
     margin: 0,
+  },
+  textAreaInput: {
+    height: 160, // Customize the height for the text area
+    textAlignVertical: "top",
+    paddingBottom: 90,
   },
 });

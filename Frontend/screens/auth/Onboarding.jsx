@@ -93,7 +93,7 @@ const Onboarding = () => {
       ref={pagerRef}
       style={styles.pagerView}
       initialPage={initialPage}
-      scrollEnabled
+      scrollEnabled={true}
     >
       <View key="0" style={styles.container}>
         <View style={styles.profile}>
