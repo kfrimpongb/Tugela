@@ -18,11 +18,14 @@ import CustomInput from "../../components/Input";
 import CustomButton from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
+import { useMutation } from "@apollo/client";
+import { LOGIN_USER } from "../../utils/mutations";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
+  const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER);
 
   const navigateToForgotPassword = () => {
     navigation.navigate("ForgotPassword");
@@ -40,6 +43,25 @@ const LoginScreen = () => {
 
   const handlePasswordChange = (text) => {
     setPassword(text);
+  };
+
+  const handleLogin = async () => {
+    if (!isFormValid()) return;
+
+    try {
+      const response = await loginUser({
+        variables: {
+          email: email,
+          password: password,
+        },
+      });
+
+      console.log("Login successful:", response.data.loginUser);
+      // Handle successful login (e.g., navigate to another screen, store the token)
+    } catch (err) {
+      console.error("Error logging in:", err);
+      // Handle login error (e.g., show error message)
+    }
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -61,15 +83,19 @@ const LoginScreen = () => {
               type="Email"
               label="Email"
               placeholder={"Enter your email address"}
-              onChangeText={handleEmailChange}
+              onChange={handleEmailChange}
             />
             <CustomInput
               type="Password"
               label="Password"
               placeholder={"Enter your password"}
-              onChangeText={handlePasswordChange}
+              onChange={handlePasswordChange}
             />
-            <CustomButton title={"Sign In"} disabled={isFormValid()} />
+            <CustomButton
+              title={"Sign In"}
+              disabled={!isFormValid()}
+              onPress={handleLogin}
+            />
             <View style={styles.account}>
               <View style={styles.signup}>
                 <CustomText style={Global.small}>
