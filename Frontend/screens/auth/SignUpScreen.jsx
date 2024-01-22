@@ -22,14 +22,28 @@ import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@apollo/client";
 import { CREATE_USER } from "../../utils/mutations";
 import google from "../../assets/images/google.png";
+import { BottomSheet } from "@rneui/themed";
+import check from "../../assets/images/check.png";
+import error from "../../assets/images/error.png";
+import CustomBottomSheet from "../../components/ui/BottomSheet";
 
 const SignUpScreen = () => {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [createUserMutation] = useMutation(CREATE_USER);
+  const [visible, setVisible] = useState(false);
+  const [bottomSheetMessage, setBottomSheetMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+
   const navigation = useNavigation();
 
+  const showBottomSheet = () => {
+    setVisible(true);
+    navigation.navigate("OTP");
+  };
+  const returnToSignUpScreen = () => {
+    setVisible(!visible);
+  };
   const navigateToOtp = () => {
     createUser();
     navigation.navigate("OTP");
@@ -38,11 +52,7 @@ const SignUpScreen = () => {
     navigation.navigate("Login");
   };
   const isFormValid = () => {
-    return name !== "" && email !== "" && password !== "";
-  };
-  const handleNameChange = (text) => {
-    // Add this function
-    setName(text);
+    return email !== "" && password !== "";
   };
   const handleEmailChange = (text) => {
     setEmail(text);
@@ -52,29 +62,36 @@ const SignUpScreen = () => {
     setPassword(text);
   };
 
+  const displayBottomSheet = (message, isError) => {
+    setBottomSheetMessage(message);
+    setIsError(isError);
+    setVisible(true);
+  };
+
   const createUser = async () => {
     if (!isFormValid()) return;
 
-    console.log(name, email, password);
+    console.log(email, password);
 
     try {
-      const data = await createUserMutation({
+      const response = await createUserMutation({
         variables: {
           input: {
-            name,
             email,
             password,
           },
         },
       });
 
-      console.log("User created:", data.register);
-      navigation.navigate("OTP");
+      console.log("User created:", response.data.message);
+
+      const successMessage = response.data.signup.message;
+      displayBottomSheet(successMessage, false);
     } catch (error) {
-      console.error("Error creating user:", error.message);
-      console.log(error);
+      displayBottomSheet(`${error.message}`, true);
     }
   };
+
   const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0;
   return (
     <SafeAreaView style={styles.container}>
@@ -99,13 +116,6 @@ const SignUpScreen = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             keyboardVerticalOffset={keyboardVerticalOffset}
           >
-            <CustomInput
-              type="Text"
-              label="Full Name"
-              placeholder="Enter your name"
-              onChange={handleNameChange}
-              value={name}
-            />
             <CustomInput
               type="Email"
               label="Email"
@@ -158,6 +168,13 @@ const SignUpScreen = () => {
           </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
       </ScrollView>
+      <CustomBottomSheet
+        visible={visible}
+        onClose={returnToSignUpScreen}
+        isError={isError}
+        message={bottomSheetMessage}
+        onPress={isError ? returnToSignUpScreen : navigateToOtp}
+      />
     </SafeAreaView>
   );
 };
@@ -250,5 +267,29 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: Fonts.medium,
     color: colors.primary,
+  },
+  bottomSheet: {
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    backgroundColor: colors.background,
+    borderTopRightRadius: 24,
+    borderTopLeftRadius: 24,
+    paddingBottom: 16,
+    paddingHorizontal: 24,
+  },
+  closeButton: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-start",
+    paddingVertical: 32,
+  },
+  check: {
+    width: 100,
+    height: 100,
+    marginRight: 4,
+    marginBottom: 14,
   },
 });

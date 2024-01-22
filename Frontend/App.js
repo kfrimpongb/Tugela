@@ -7,7 +7,7 @@ import LoadFonts from "./loadFonts";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: "http://54.170.109.42/graphql",
+  uri: "http://18.157.169.254:3005/graphql",
   cache: new InMemoryCache(),
 });
 export default function App() {
