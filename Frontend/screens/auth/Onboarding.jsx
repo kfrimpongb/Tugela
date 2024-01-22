@@ -122,6 +122,7 @@ const Onboarding = () => {
           ref={(scrollView) => {
             this.scrollView = scrollView;
           }}
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.profile}>
             <CustomText weight="medium" style={Global.h2}>
@@ -172,14 +173,14 @@ const Onboarding = () => {
               selectedItemStyle={styles.selectedItems}
             />
           </View>
-          <View style={styles.button}>
-            <CustomButton
-              title={"Continue"}
-              disabled={!isFormValid}
-              onPress={moveToNext}
-            />
-          </View>
         </ScrollView>
+        <View style={styles.button}>
+          <CustomButton
+            title={"Continue"}
+            disabled={!isFormValid}
+            onPress={moveToNext}
+          />
+        </View>
       </KeyboardAvoidingView>
       <Freelancer key="1" />
       <Client key="2" />

@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     width: "100%",
     paddingHorizontal: 0,
-    marginVertical: 4,
+    marginVertical: 2,
   },
   inputError: {
     color: colors.danger,
