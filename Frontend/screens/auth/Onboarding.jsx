@@ -21,6 +21,8 @@ import avata from "../../assets/images/profile.png";
 import * as ImagePicker from "expo-image-picker";
 import DropdownSelect from "react-native-input-select";
 import { Fonts } from "../../theme";
+import { useMutation } from "@apollo/client";
+import { CREATE_USER } from "../../utils/mutations";
 
 const Onboarding = () => {
   const pagerRef = useRef(null);
@@ -28,8 +30,31 @@ const Onboarding = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
   const [image, setImage] = useState(avata);
-  const [usertype, setUsertype] = useState("");
+  const [userType, setUserType] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const [createUserMutation] = useMutation(CREATE_USER);
+
+  const onboardUser = async () => {
+    if (!isFormValid()) return;
+
+    console.log(firstname, lastname, userType);
+
+    try {
+      const response = await createUserMutation({
+        variables: {
+          input: {
+            firstname,
+            lastname,
+            userType,
+          },
+        },
+      });
+
+      console.log("User created:", response.data.message);
+    } catch (error) {
+      console.log("Error", error.message);
+    }
+  };
 
   const handleImagePicker = async () => {
     try {
@@ -62,7 +87,7 @@ const Onboarding = () => {
   const validateForm = () => {
     const isFirstNameValid = firstname.trim() !== "";
     const isLastNameValid = lastname.trim() !== "";
-    const isUsertypeValid = usertype !== "";
+    const isUsertypeValid = userType !== "";
     const isImageValid = !!image.uri;
 
     const isValid =
@@ -89,6 +114,7 @@ const Onboarding = () => {
   };
 
   const moveToNext = () => {
+    onboardUser();
     if (isFormValid && pagerRef.current) {
       if (usertype === "1") {
         pagerRef.current.setPage(1);
@@ -162,7 +188,7 @@ const Onboarding = () => {
               dropdownStyle={styles.dropdownStyle}
               selectedValue={usertype}
               onValueChange={(itemValue) => {
-                setUsertype(itemValue);
+                setUserType(itemValue);
                 validateForm();
               }}
               placeholderStyle={styles.placeholderStyle}

@@ -51,8 +51,10 @@ const LoginScreen = () => {
     try {
       const response = await loginUser({
         variables: {
-          email: email,
-          password: password,
+          input: {
+            email: email,
+            password: password,
+          },
         },
       });
 
