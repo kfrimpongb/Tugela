@@ -8,7 +8,22 @@ import colors from "../../colors";
 import check from "../../assets/images/check.png";
 import error from "../../assets/images/error.png";
 
-const CustomBottomSheet = ({ visible, onClose, isError, message, onPress }) => {
+const CustomBottomSheet = ({
+  visible,
+  onClose,
+  isError,
+  message,
+  onPress,
+  isSendError,
+}) => {
+  // Determine the source of the image based on isError and isSendError
+  const imageSource = isError || isSendError ? error : check;
+
+  // Determine the title of the button
+  const buttonTitle = isError || isSendError ? "Okay" : "Continue";
+
+  // Determine the title message
+  const titleMessage = isError || isSendError ? "Failed" : "Success";
   return (
     <BottomSheet isVisible={visible} modalProps={{}}>
       <View style={styles.bottomSheet}>
@@ -20,10 +35,10 @@ const CustomBottomSheet = ({ visible, onClose, isError, message, onPress }) => {
             Close
           </CustomText>
         </TouchableOpacity>
-        <Image source={isError ? error : check} style={styles.check} />
+        <Image source={imageSource} style={styles.check} />
         <View style={styles.messageContainer}>
           <CustomText weight="semibold" style={{ fontSize: 24 }}>
-            {isError ? "Failed" : "Success"}
+            {titleMessage}
           </CustomText>
           <CustomText
             weight="regular"
@@ -33,10 +48,7 @@ const CustomBottomSheet = ({ visible, onClose, isError, message, onPress }) => {
           </CustomText>
         </View>
         <View style={styles.buttonContainer}>
-          <CustomButton
-            title={isError ? "Okay" : "Continue"}
-            onPress={onPress}
-          />
+          <CustomButton title={buttonTitle} onPress={onPress} />
         </View>
       </View>
     </BottomSheet>

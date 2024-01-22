@@ -22,9 +22,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@apollo/client";
 import { CREATE_USER } from "../../utils/mutations";
 import google from "../../assets/images/google.png";
-import { BottomSheet } from "@rneui/themed";
-import check from "../../assets/images/check.png";
-import error from "../../assets/images/error.png";
 import CustomBottomSheet from "../../components/ui/BottomSheet";
 
 const SignUpScreen = () => {
@@ -46,7 +43,7 @@ const SignUpScreen = () => {
   };
   const navigateToOtp = () => {
     createUser();
-    navigation.navigate("OTP");
+    navigation.navigate("OTP", { email: email });
   };
   const navigateToLogin = () => {
     navigation.navigate("Login");

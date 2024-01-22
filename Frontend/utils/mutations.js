@@ -17,3 +17,21 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
+export const OTP_USER = gql`
+  mutation OTPUser($input: VerifyOtpInput!) {
+    verifyOtp(input: $input) {
+      id
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
+export const SEND_OTP = gql`
+  mutation SendOtp($input: SendOtpInput!) {
+    sendOtp(input: $input) {
+      message
+    }
+  }
+`;

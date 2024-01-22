@@ -3,11 +3,11 @@ import { View, TextInput, StyleSheet } from "react-native";
 import colors from "../colors"; // Assuming you have a colors file
 
 const OtpInputs = ({ onOtpComplete }) => {
-  const [otp, setOtp] = useState(Array(4).fill(""));
+  const [otp, setOtp] = useState(Array(6).fill(""));
   const inputRefs = useRef([]);
 
   useEffect(() => {
-    inputRefs.current = inputRefs.current.slice(0, 5); // Initialize refs for 4 input boxes
+    inputRefs.current = inputRefs.current.slice(0, 6);
   }, []);
 
   useEffect(() => {
@@ -21,14 +21,16 @@ const OtpInputs = ({ onOtpComplete }) => {
     newOtp[index] = text;
     setOtp(newOtp);
 
-    if (text && index < 3) {
+    if (text && index < 5) {
       inputRefs.current[index + 1].focus();
+    } else if (!text && index > 0) {
+      inputRefs.current[index - 1].focus();
     }
   };
 
   return (
     <View style={styles.otpContainer}>
-      {Array.from({ length: 5 }).map((_, index) => (
+      {Array.from({ length: 6 }).map((_, index) => (
         <TextInput
           key={index}
           ref={(el) => (inputRefs.current[index] = el)}
@@ -53,8 +55,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   otpBox: {
-    width: 60,
-    height: 60,
+    width: 45,
+    height: 55,
     borderWidth: 1,
     borderColor: colors.borderColor,
     textAlign: "center",

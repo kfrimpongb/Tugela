@@ -25,7 +25,8 @@ import { Fonts } from "../../theme";
 const Onboarding = () => {
   const pagerRef = useRef(null);
   const [initialPage, setInitialPage] = useState(0);
-  const [name, setName] = useState("");
+  const [firstname, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
   const [image, setImage] = useState(avata);
   const [usertype, setUsertype] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
@@ -59,22 +60,31 @@ const Onboarding = () => {
   };
 
   const validateForm = () => {
-    const isNameValid = name.trim() !== "";
+    const isFirstNameValid = firstname.trim() !== "";
+    const isLastNameValid = lastname.trim() !== "";
     const isUsertypeValid = usertype !== "";
     const isImageValid = !!image.uri;
 
-    const isValid = isNameValid && isUsertypeValid && isImageValid;
+    const isValid =
+      isFirstNameValid && isLastNameValid && isUsertypeValid && isImageValid;
     setIsFormValid(isValid);
 
-    console.log("Name valid:", isNameValid);
+    console.log("Firstname valid:", isFirstNameValid);
+    console.log("Lastname valid:", isLastNameValid);
     console.log("Usertype valid:", isUsertypeValid);
     console.log("Image valid:", isImageValid);
     console.log("Form valid:", isValid);
   };
 
-  const handleNameChange = (text) => {
+  const handleFirstNameChange = (text) => {
     console.log("Input Text:", text);
-    setName(text);
+    setFirstName(text);
+    validateForm();
+  };
+
+  const handleLastNameChange = (text) => {
+    console.log("Input Text:", text);
+    setLastName(text);
     validateForm();
   };
 
@@ -112,7 +122,6 @@ const Onboarding = () => {
           ref={(scrollView) => {
             this.scrollView = scrollView;
           }}
-          showsVerticalScrollIndicator="false"
         >
           <View style={styles.profile}>
             <CustomText weight="medium" style={Global.h2}>
@@ -130,10 +139,17 @@ const Onboarding = () => {
           <View style={styles.form}>
             <CustomInput
               type="Text"
-              label="Full Name"
-              placeholder={"Enter your full name"}
-              onChange={handleNameChange}
-              value={name}
+              label="First Name"
+              placeholder={"Enter your first name"}
+              onChange={handleFirstNameChange}
+              value={firstname}
+            />
+            <CustomInput
+              type="Text"
+              label="Last Name"
+              placeholder={"Enter your last name"}
+              onChange={handleLastNameChange}
+              value={lastname}
             />
             <DropdownSelect
               label="Select User Type"
