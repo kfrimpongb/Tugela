@@ -35,7 +35,6 @@ const ForgotPassword = () => {
     setVisible(true);
   };
   const navigateToOtp = () => {
-    createUser();
     navigation.navigate("ForgotOTP", { email: email });
   };
   const navigateToLogin = () => {
