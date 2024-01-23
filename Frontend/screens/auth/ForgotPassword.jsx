@@ -34,11 +34,14 @@ const ForgotPassword = () => {
     setIsError(isError);
     setVisible(true);
   };
-
+  const navigateToOtp = () => {
+    createUser();
+    navigation.navigate("ForgotOTP", { email: email });
+  };
   const navigateToLogin = () => {
     navigation.navigate("Login");
   };
-  const returnToSignUpScreen = () => {
+  const closeBottomSheet = () => {
     setVisible(!visible);
   };
   const navigateToResetPassword = () => {
@@ -101,10 +104,10 @@ const ForgotPassword = () => {
       </TouchableWithoutFeedback>
       <CustomBottomSheet
         visible={visible}
-        onClose={returnToSignUpScreen}
+        onClose={closeBottomSheet}
         isError={isError}
         message={bottomSheetMessage}
-        onPress={isError ? returnToSignUpScreen : navigateToResetPassword}
+        onPress={isError ? closeBottomSheet : navigateToOtp}
       />
     </SafeAreaView>
   );

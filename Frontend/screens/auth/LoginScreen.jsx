@@ -17,15 +17,24 @@ import { Global } from "../../globalStyles";
 import CustomInput from "../../components/Input";
 import CustomButton from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
-import { Button } from "@rneui/themed";
+import { Dialog } from "@rneui/themed";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../../utils/mutations";
+import CustomBottomSheet from "../../components/ui/BottomSheet";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
   const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER);
+  const [visible, setVisible] = useState(false);
+  const [visible1, setVisible1] = useState(false);
+  const [bottomSheetMessage, setBottomSheetMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+
+  const toggleDialog = () => {
+    setVisible(!visible);
+  };
 
   const navigateToForgotPassword = () => {
     navigation.navigate("ForgotPassword");
@@ -33,6 +42,7 @@ const LoginScreen = () => {
   const navigateToSignup = () => {
     navigation.navigate("Signup");
   };
+
   const isFormValid = () => {
     return email !== "" && password !== "";
   };
@@ -43,6 +53,16 @@ const LoginScreen = () => {
 
   const handlePasswordChange = (text) => {
     setPassword(text);
+  };
+
+  const displayBottomSheet = (message, isError) => {
+    setBottomSheetMessage(message);
+    setIsError(isError);
+    setVisible1(true);
+  };
+
+  const closeBottomSheet = () => {
+    setVisible1(!visible1);
   };
 
   const handleLogin = async () => {
@@ -59,10 +79,13 @@ const LoginScreen = () => {
       });
 
       console.log("Login successful:", response.data.login);
-      // Handle successful login (e.g., navigate to another screen, store the token)
-    } catch (err) {
-      console.error("Error logging in:", err);
-      // Handle login error (e.g., show error message)
+      setVisible(true);
+      setTimeout(() => {
+        setVisible(false); // Hide loading dialog
+        navigation.navigate("Tab", { screen: "home" }); // Navigate to Home
+      }, 2000);
+    } catch (error) {
+      displayBottomSheet(`${error.message}`, true);
     }
   };
   return (
@@ -136,6 +159,16 @@ const LoginScreen = () => {
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
+      <Dialog isVisible={visible} onBackdropPress={toggleDialog}>
+        <Dialog.Loading />
+      </Dialog>
+      <CustomBottomSheet
+        visible={visible1}
+        onClose={closeBottomSheet}
+        isError={isError}
+        message={bottomSheetMessage}
+        onPress={isError ? closeBottomSheet : ""}
+      />
     </SafeAreaView>
   );
 };

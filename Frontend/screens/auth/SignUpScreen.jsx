@@ -43,7 +43,7 @@ const SignUpScreen = () => {
   };
   const navigateToOtp = () => {
     createUser();
-    navigation.navigate("OTP", { email: email });
+    navigation.navigate("SignupOTP", { email: email });
   };
   const navigateToLogin = () => {
     navigation.navigate("Login");

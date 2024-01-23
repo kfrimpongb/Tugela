@@ -186,7 +186,7 @@ const Onboarding = () => {
                 { label: "Client", value: "2" },
               ]}
               dropdownStyle={styles.dropdownStyle}
-              selectedValue={usertype}
+              selectedValue={userType}
               onValueChange={(itemValue) => {
                 setUserType(itemValue);
                 validateForm();

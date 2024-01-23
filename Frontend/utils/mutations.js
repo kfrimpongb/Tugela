@@ -51,3 +51,9 @@ export const FORGOT_PASSWORD = gql`
     }
   }
 `;
+
+export const IS_AUTHENTICATED_QUERY = gql`
+  query IsAuthenticated {
+    isAuthenticated @client
+  }
+`;

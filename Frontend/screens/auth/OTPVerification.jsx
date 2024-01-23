@@ -25,7 +25,12 @@ import { OTP_USER } from "../../utils/mutations";
 import { SEND_OTP } from "../../utils/mutations";
 import CustomBottomSheet from "../../components/ui/BottomSheet";
 
-const OTPVerification = () => {
+const OTPVerification = ({
+  onVerificationSuccess,
+  onVerificationFailure,
+  onSendOtpSuccess,
+  onSendOtpFailure,
+}) => {
   const navigation = useNavigation();
   const route = useRoute();
   const [otp, setOtp] = useState("");
@@ -76,8 +81,10 @@ const OTPVerification = () => {
       });
 
       console.log(response.data.verifyOtp);
+      onVerificationSuccess(response.data);
       showVerificationBottomSheet("Verification successful", false);
     } catch (error) {
+      onVerificationFailure(error);
       showVerificationBottomSheet("Verification Failed", true);
     }
   };
@@ -93,10 +100,12 @@ const OTPVerification = () => {
       });
 
       console.log(response.data.sendOtp);
+      onSendOtpSuccess(response.data);
       showSendOtpBottomSheet("OTP sent successfully", true);
     } catch (error) {
       console.error("OTP verification error:", error.message);
-      showSendOtpBottomSheet(false);
+      onSendOtpFailure(error);
+      showSendOtpBottomSheet("OTP send failed", true);
     }
   };
 
@@ -154,14 +163,14 @@ const OTPVerification = () => {
         onClose={returnToOtp}
         isError={isError}
         message={bottomSheetMessage}
-        onPress={isError ? returnToOtp : navigateToOnboarding}
+        onPress={isError ? onVerificationFailure : onVerificationSuccess}
       />
       <CustomBottomSheet
         visible={sendOtpVisible}
         onClose={() => setSendOtpVisible(false)}
         isSendError={isSendError}
         message={bottomSheetMessage2}
-        onPress={() => setSendOtpVisible(false)}
+        onPress={isSendError ? onSendOtpFailure : onSendOtpSuccess}
       />
     </SafeAreaView>
   );
