@@ -23,7 +23,13 @@ import { useMutation } from "@apollo/client";
 import { CREATE_USER } from "../../utils/mutations";
 import google from "../../assets/images/google.png";
 import CustomBottomSheet from "../../components/ui/BottomSheet";
+import * as firebase from "firebase";
+import { GoogleSignin } from "expo-google-sign-in";
 
+GoogleSignin.configure({
+  webClientId:
+    "399762595126-ha7mup7mnn0m7vdpdd5ev7k71cvucctt.apps.googleusercontent.com",
+});
 const SignUpScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +39,22 @@ const SignUpScreen = () => {
   const [isError, setIsError] = useState(false);
 
   const navigation = useNavigation();
+
+  const signInWithGoogleAsync = async () => {
+    try {
+      const { type, user } = await GoogleSignin.signInAsync();
+
+      if (type === "success") {
+        const credential = firebase.auth.GoogleAuthProvider.credential(
+          user.auth.idToken,
+          user.auth.accessToken
+        );
+        await firebase.auth().signInWithCredential(credential);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const showBottomSheet = () => {
     setVisible(true);
@@ -65,6 +87,7 @@ const SignUpScreen = () => {
     setVisible(true);
   };
 
+  //  graph ql mutation to handle creation of a user
   const createUser = async () => {
     if (!isFormValid()) return;
 
@@ -161,6 +184,7 @@ const SignUpScreen = () => {
               iconColor={colors.primary}
               buttonStyle={styles.button}
               titleStyle={styles.buttonText}
+              onPress={signInWithGoogleAsync}
             />
           </KeyboardAvoidingView>
         </TouchableWithoutFeedback>

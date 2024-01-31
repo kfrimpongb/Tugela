@@ -26,7 +26,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
-  const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER);
+  const [loginUser] = useMutation(LOGIN_USER);
   const [visible, setVisible] = useState(false);
   const [visible1, setVisible1] = useState(false);
   const [bottomSheetMessage, setBottomSheetMessage] = useState("");
@@ -65,6 +65,7 @@ const LoginScreen = () => {
     setVisible1(!visible1);
   };
 
+  // graph ql mutation to handle login
   const handleLogin = async () => {
     if (!isFormValid()) return;
 

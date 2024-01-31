@@ -5,6 +5,11 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import LoadFonts from "./loadFonts";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { gql } from "@apollo/client";
+import { useEffect } from "react";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import firebaseConfig from "./firebaseConfig";
+
 const cache = new InMemoryCache();
 const client = new ApolloClient({
   uri: "http://18.157.169.254:3005/graphql",
@@ -28,6 +33,9 @@ cache.writeQuery({
   },
 });
 export default function App() {
+  useEffect(() => {
+    firebase.initializeApp(firebaseConfig);
+  }, []);
   const [fontsLoaded] = LoadFonts();
   if (!fontsLoaded) {
     return null;
