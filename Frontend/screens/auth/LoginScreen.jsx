@@ -83,7 +83,7 @@ const LoginScreen = () => {
       setVisible(true);
       setTimeout(() => {
         setVisible(false); // Hide loading dialog
-        navigation.navigate("Tab", { screen: "home" }); // Navigate to Home
+        navigation.navigate("Home"); // Navigate to Home
       }, 2000);
     } catch (error) {
       displayBottomSheet(`${error.message}`, true);

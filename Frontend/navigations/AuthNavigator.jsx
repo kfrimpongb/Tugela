@@ -9,6 +9,7 @@ import Back from "../components/ui/Back";
 import Onboarding from "../screens/auth/Onboarding";
 import SignupOTP from "../screens/auth/SignupOTP";
 import ForgotOTP from "../screens/auth/ForgotOTP";
+import HomeScreen from "../screens/HomeScreen";
 const Stack = createStackNavigator();
 const AuthNavigator = () => {
   return (
@@ -16,6 +17,11 @@ const AuthNavigator = () => {
       <Stack.Screen
         name="Splash"
         component={SplashScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

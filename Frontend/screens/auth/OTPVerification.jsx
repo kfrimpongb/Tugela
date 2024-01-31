@@ -9,7 +9,7 @@ import {
   Platform,
   Keyboard,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import tp from "../../assets/images/OTP.png";
 import check from "../../assets/images/check.png";
@@ -30,6 +30,7 @@ const OTPVerification = ({
   onVerificationFailure,
   onSendOtpSuccess,
   onSendOtpFailure,
+  closeBottomSheet,
 }) => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -40,9 +41,26 @@ const OTPVerification = ({
   const [bottomSheetMessage2, setBottomSheetMessage2] = useState("");
   const [isError, setIsError] = useState(false);
   const [isSendError, setIsSendError] = useState(false);
-
+  const [nextAction, setNextAction] = useState(null);
   const [verifyOtpMutation] = useMutation(OTP_USER);
   const [sendOtpMutation] = useMutation(SEND_OTP);
+
+  useEffect(() => {
+    // Perform the action when the bottom sheet is closed
+    if (!visible && !sendOtpVisible && nextAction) {
+      nextAction();
+      setNextAction(null); // Reset the action
+    }
+  }, [visible, sendOtpVisible, nextAction]);
+
+  // ... existing functions
+
+  // Call this function to close the bottom sheet and set the next action
+  const closeBottomSheetAndNavigate = (action) => {
+    setNextAction(() => action); // Set the next action
+    setVisible(false); // Close the bottom sheet
+    setSendOtpVisible(false);
+  };
 
   const returnToOtp = () => {
     setVisible(!visible);
@@ -81,11 +99,11 @@ const OTPVerification = ({
       });
 
       console.log(response.data.verifyOtp);
-      onVerificationSuccess(response.data);
       showVerificationBottomSheet("Verification successful", false);
+      onVerificationSuccess(response.data);
     } catch (error) {
-      onVerificationFailure(error);
       showVerificationBottomSheet("Verification Failed", true);
+      onVerificationFailure(error);
     }
   };
 
@@ -100,12 +118,12 @@ const OTPVerification = ({
       });
 
       console.log(response.data.sendOtp);
-      onSendOtpSuccess(response.data);
       showSendOtpBottomSheet("OTP sent successfully", true);
+      onSendOtpSuccess(response.data);
     } catch (error) {
       console.error("OTP verification error:", error.message);
-      onSendOtpFailure(error);
       showSendOtpBottomSheet("OTP send failed", true);
+      onSendOtpFailure(error);
     }
   };
 
@@ -163,14 +181,22 @@ const OTPVerification = ({
         onClose={returnToOtp}
         isError={isError}
         message={bottomSheetMessage}
-        onPress={isError ? onVerificationFailure : onVerificationSuccess}
+        onPress={() => {
+          const action = isError
+            ? onVerificationFailure
+            : onVerificationSuccess;
+          closeBottomSheetAndNavigate(action);
+        }}
       />
       <CustomBottomSheet
         visible={sendOtpVisible}
         onClose={() => setSendOtpVisible(false)}
         isSendError={isSendError}
         message={bottomSheetMessage2}
-        onPress={isSendError ? onSendOtpFailure : onSendOtpSuccess}
+        onPress={() => {
+          const action = isSendError ? onSendOtpFailure : onSendOtpSuccess;
+          closeBottomSheetAndNavigate(action);
+        }}
       />
     </SafeAreaView>
   );
