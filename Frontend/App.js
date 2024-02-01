@@ -3,10 +3,14 @@ import AppNavigator from "./navigations/AppNavigator";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import LoadFonts from "./loadFonts";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+} from "@apollo/client/react";
 import { gql } from "@apollo/client";
 import { useEffect } from "react";
-import * as firebase from "firebase/app";
+import { initializeApp } from "firebase/app";
 import "firebase/auth";
 import firebaseConfig from "./firebaseConfig";
 

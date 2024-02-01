@@ -23,7 +23,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_USER } from "../../utils/mutations";
 import google from "../../assets/images/google.png";
 import CustomBottomSheet from "../../components/ui/BottomSheet";
-import * as firebase from "firebase";
+import * as firebase from "firebase/app";
 import { GoogleSignin } from "expo-google-sign-in";
 
 GoogleSignin.configure({
