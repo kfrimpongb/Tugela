@@ -22,7 +22,7 @@ class recommendationEngine():
         self.conn = None
         self.freelancer_schema = ['freelancer_id', 'first_name', 'middle_name', 'last_name', 'email', 'linkedin_url', 'skills', 'country', 'base_currency']
         self.gigs_schema = ['gig_id', 'post_date', 'gig_name', 'client_id', 'description', 'compensation', 'currency', 'timeframe', 'country']
-
+    
     # Database relevant methods
     def connect(self, params):
         db_file = params['db_file']
@@ -270,6 +270,13 @@ class recommendationEngine():
     
         return output_msg
 
+    def sort_job_requests(self, gig_list, params):
+        top_n = params['top_n']
+        top_gigs = sorted(gig_list, key=lambda x: float(x["success_score"]), reverse=True)
+        top_gigs = top_gigs[0:top_n]
+        
+        return top_gigs
+
 
 
 
@@ -286,7 +293,7 @@ params = {
             'create_database'      : False,
             'insert_data'          : False,
             'perform_assessment'   : True,
-            'recommendation_count' : 5,
+            'top_n'                : 1,
 }
 
 
@@ -295,7 +302,7 @@ RE = recommendationEngine()
 RE.connect(params)
 
 if params['create_database'] == True:
-    # RE.create_database(params)
+    RE.create_database(params)
     RE.create_freelancers_table(params)
     RE.create_gigs_table(params)
     RE.create_clients_table(params)
@@ -313,3 +320,4 @@ if params['perform_assessment'] == True:
     df_gigs = RE.create_dataframe(gig_data, _type='gigs')
     message = RE.construct_assessment(df_freelancer, df_gigs)
     output_msg = RE.recruitment_analysis(message)
+    top_gigs = RE.sort_job_requests(output_msg, params)

@@ -1,11 +1,13 @@
 import autogen
 
+try:
+    with open("../../../../private/oai_key", "r") as file:
+        api_key = file.read().strip()
+except FileNotFoundError:
+    print("api key not found")
 
-config_list = autogen.config_list_from_json(
-    "OAI_CONFIG_LIST",
-    filter_dict={
-        "model": ["gpt-4"],
-    },
-)
 
-llm_config = {"config_list": config_list, "cache_seed": 42}
+llm_config = {'config_list': [{'model': 'gpt-4',
+   'api_key': api_key,
+   'tags': ['gpt-4']}],
+ 'cache_seed': 42}
