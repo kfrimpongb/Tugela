@@ -5,3 +5,5 @@ pandas==2.1.0
 cryptoconditions
 google-cloud-secret-manager==2.0.0
 pyautogen
+pydantic
+fastapi

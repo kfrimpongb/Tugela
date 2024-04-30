@@ -7,7 +7,7 @@ except FileNotFoundError:
     print("api key not found")
 
 
-llm_config = {'config_list': [{'model': 'gpt-4',
+llm_config = {'config_list': [{'model': 'gpt-3.5-turbo',
    'api_key': api_key,
-   'tags': ['gpt-4']}],
+   'tags': ['gpt-3.5-turbo']}],
  'cache_seed': 42}
