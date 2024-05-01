@@ -10,6 +10,9 @@ async function main() {
     client.fundWallet(),
   ]);
 
+  console.log(" - client address:", wallet1);
+  console.log(" - freelancer address:", wallet2);
+
   console.log(" - client address:", wallet1.wallet.address);
   console.log(" - freelancer address:", wallet2.wallet.address);
 
@@ -57,6 +60,9 @@ async function main() {
     const delta = await getTimes();
     // const expiration = new Date((delta.cancelAfter + Date.UTC(2000, 0, 1, 0, 0, 0, 0)) * 1000);
     const expiration = await toDateTime(delta.cancelAfter)
+
+    console.log("wallet1.wallet.address: ", wallet1.wallet.address);
+    console.log("wallet2.wallet.address: ", wallet2.wallet.address);
 
     const createEscrow = await client.autofill({
       Account: wallet1.wallet.address,
