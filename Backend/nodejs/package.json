@@ -12,6 +12,9 @@
   "dependencies": {
     "express": "^4.19.2",
     "five-bells-condition": "^5.0.1",
-    "xrpl": "^2.14.1"
+    "xrpl": "^2.14.1",
+    "xrpl-txdata": "^2.0.1",
+    "xumm": "^1.7.7",
+    "xumm-sdk": "^1.11.1"
   }
 }

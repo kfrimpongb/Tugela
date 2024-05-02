@@ -9,9 +9,11 @@ let escrows = [];
 // Dummy database to store funded wallets
 let fundedWallets = [];
 
-////////////////////////////////////////
+
+
+///----------------------------------------------
 // Endpoint to create and fund a wallet
-////////////////////////////////////////
+///----------------------------------------------
 app.post("/create_and_fund_wallet", async (req, res) => {
   try {
     const { client, wallet } = await createAndFundWallet();
@@ -36,9 +38,9 @@ app.post("/create_and_fund_wallet", async (req, res) => {
 });
 
 
-////////////////////////////////////////
+///----------------------------------------------
 // Endpoint to create an escrow
-////////////////////////////////////////
+///----------------------------------------------
 app.post("/create_escrow", async (req, res) => {
 
     const xrpl = require("xrpl");
@@ -187,9 +189,9 @@ app.post("/create_escrow", async (req, res) => {
 });
   
 
-////////////////////////////////////////
+///----------------------------------------------
 // Endpoint to close an escrow
-////////////////////////////////////////
+///----------------------------------------------
 app.post("/close_escrow", async (req, res) => {
     const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
     await client.connect();
