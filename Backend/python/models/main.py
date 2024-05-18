@@ -32,12 +32,16 @@ def work():
 
 class ClientModel(BaseModel):
     client_id: str = None  # Make client_id optional
-    client_name: str
+    entity_name: str
+    entity_id: str
+    first_name: str
+    middle_name: str
+    last_name: str
     email: str
-    phone: Optional[str]
-    address: Optional[str]
-    city: str
+    currency: str
     country: str
+    join_date: str
+
 
 @app.post("/create_client")
 def create_client(client: ClientModel):

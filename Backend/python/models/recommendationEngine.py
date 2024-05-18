@@ -187,7 +187,7 @@ class recommendationEngine():
                 client_data.get('join_date', ''),  # Handle missing join_date gracefully
             ))
             self.conn.commit()
-            return {"status": "Client created successfully", "client_id": client_id}
+            return {"status": "Client created successfully"}
         except sqlite3.Error as e:
             return {"error": f"Error creating client: {e}"}
 
