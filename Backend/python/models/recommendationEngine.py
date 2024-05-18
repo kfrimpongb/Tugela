@@ -5,6 +5,7 @@ import openai
 import autogen
 import sqlite3
 import pandas as pd
+import uuid
 import mysql.connector
 from langchain.agents import initialize_agent, Tool
 from langchain.agents import AgentType
@@ -164,6 +165,32 @@ class recommendationEngine():
     #################
     # Client Related
     #################
+
+    def insert_client_data(self, params, client_data):
+        clients_table = params['clients_table']
+        try:
+            cursor = self.conn.cursor()
+            client_id = str(uuid.uuid4())  # Generate a UUID for client_id
+            cursor.execute('''
+                INSERT INTO {0} (client_id, entity_name, entity_id, first_name, middle_name, last_name, email, currency, country, join_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            '''.format(clients_table), (
+                423443,
+                client_data.get('entity_name', ''),  # Handle missing entity_name gracefully
+                client_data.get('entity_id', ''),  # Handle missing entity_id gracefully
+                client_data.get('first_name', ''),  # Handle missing first_name gracefully
+                client_data.get('middle_name', ''),  # Handle missing middle_name gracefully
+                client_data.get('last_name', ''),  # Handle missing last_name gracefully
+                client_data['email'],  # Ensure email is provided
+                client_data.get('currency', ''),  # Handle missing currency gracefully
+                client_data['country'],  # Ensure country is provided
+                client_data.get('join_date', ''),  # Handle missing join_date gracefully
+            ))
+            self.conn.commit()
+            return {"status": "Client created successfully", "client_id": client_id}
+        except sqlite3.Error as e:
+            return {"error": f"Error creating client: {e}"}
+
     def create_clients_table(self, params):
         clients_table = params['clients_table']
         try:

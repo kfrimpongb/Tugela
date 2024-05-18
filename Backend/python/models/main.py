@@ -1,6 +1,11 @@
+from http.client import HTTPException
+from typing import Optional
+
 from fastapi import FastAPI
 from recommendationEngine import recommendationEngine
 from pydantic import BaseModel
+
+
 
 
 ######################################
@@ -24,6 +29,39 @@ def work():
 ##################
 ## Fetch Gig Data
 ##################
+
+class ClientModel(BaseModel):
+    client_id: str = None  # Make client_id optional
+    client_name: str
+    email: str
+    phone: Optional[str]
+    address: Optional[str]
+    city: str
+    country: str
+
+@app.post("/create_client")
+def create_client(client: ClientModel):
+    params = {
+        'db': 'tugela',
+        'db_file': 'tugela.db',
+        'freelancer_table': 'freelancers',
+        'clients_table': 'clients',
+        'gigs_table': 'gigs',
+        'freelancer_id': '',
+        'create_database': False,
+        'insert_data': False,
+        'perform_assessment': True,
+        'top_n': '',
+    }
+
+    RE = recommendationEngine()
+    RE.connect(params)
+    # Ensure the clients table exists before inserting a new client
+    table_result = RE.insert_client_data(params,  client.dict())
+    RE.close()
+    return {"gig_data" : table_result}
+
+
 @app.get("/fetch_gigs/{gigs_table}")
 def fetch_gigs(gigs_table: str):
     params = {
