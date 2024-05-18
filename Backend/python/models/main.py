@@ -15,6 +15,33 @@ class InputPayload(BaseModel):
 
 app = FastAPI()
 
+RE = recommendationEngine()
+
+
+# Define parameters
+params = {
+    'db': 'tugela',
+    'db_file': 'tugela.db',
+    'freelancer_table': 'freelancers',
+    'clients_table': 'clients',
+    'gigs_table': 'gigs',
+    'freelancer_id': '',
+    'create_database': True,  # Set to True to create databases and tables when the app starts
+    'insert_data': False,
+    'perform_assessment': False,
+    'top_n': '',
+}
+
+# Create databases and tables when the app starts
+RE.connect(params)
+RE.create_database(params)
+RE.create_freelancers_table(params)
+RE.create_clients_table(params)
+RE.create_tokens_table()
+RE.create_gigs_table(params)
+RE.close()
+
+
 ######################################
 # Assessment Endpoint
 ######################################
@@ -63,7 +90,7 @@ def create_client(client: ClientModel):
     # Ensure the clients table exists before inserting a new client
     table_result = RE.insert_client_data(params,  client.dict())
     RE.close()
-    return {"gig_data" : table_result}
+    return {table_result}
 
 
 @app.get("/fetch_gigs/{gigs_table}")
@@ -80,8 +107,8 @@ def fetch_gigs(gigs_table: str):
                 'perform_assessment'   : True,
                 'top_n'                : '',
     }
-    
-    RE = recommendationEngine()    
+
+    RE = recommendationEngine()
     RE.connect(params)
     gig_data = RE.fetch_gig_data(params)
     RE.close()

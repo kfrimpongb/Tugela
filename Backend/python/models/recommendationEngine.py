@@ -1,16 +1,25 @@
 import os
 import ast
 import json
+import random
+
+import jwt
 import openai
 import autogen
 import sqlite3
 import pandas as pd
+from fastapi import FastAPI, HTTPException
+
 import uuid
 import mysql.connector
 from langchain.agents import initialize_agent, Tool
 from langchain.agents import AgentType
+from starlette.responses import JSONResponse
+
 from prompts import JOB_RECRUITER_PROXY, JOB_RECRUITER_ASSISTANT
 from configs import llm_config
+from datetime import datetime, timedelta
+
 
 
 
@@ -168,14 +177,35 @@ class recommendationEngine():
 
     def insert_client_data(self, params, client_data):
         clients_table = params['clients_table']
+        tokens_table = 'tokens_table'  # Assuming the name of the tokens table
+
         try:
             cursor = self.conn.cursor()
-            client_id = str(uuid.uuid4())  # Generate a UUID for client_id
+            # Check if the email already exists
+            cursor.execute("SELECT email FROM {0} WHERE email = ?".format(clients_table), (client_data['email'],))
+            existing_email = cursor.fetchone()
+
+            if existing_email:
+                # If the email exists, return a JSON response indicating that the email already exists
+                raise HTTPException(status_code=400, detail={"message": "Email already exists", "data": ""})
+            # Generate a UUID for client_id
+            client_id = random.randint(100000000, 999999999)
+
+            # Generate an access token with a one-week expiration
+            token_payload = {
+                'client_id': client_id,
+                'exp': datetime.utcnow() + timedelta(weeks=1)
+            }
+
+            secret_key = '90909jnj935cxjrf'  # Define your secret key
+            access_token = jwt.encode(token_payload, secret_key, algorithm='HS256')
+
+            # Execute the first query to insert client data
             cursor.execute('''
                 INSERT INTO {0} (client_id, entity_name, entity_id, first_name, middle_name, last_name, email, currency, country, join_date)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             '''.format(clients_table), (
-                423443,
+                client_id,
                 client_data.get('entity_name', ''),  # Handle missing entity_name gracefully
                 client_data.get('entity_id', ''),  # Handle missing entity_id gracefully
                 client_data.get('first_name', ''),  # Handle missing first_name gracefully
@@ -186,11 +216,36 @@ class recommendationEngine():
                 client_data['country'],  # Ensure country is provided
                 client_data.get('join_date', ''),  # Handle missing join_date gracefully
             ))
-            self.conn.commit()
-            return {"status": "Client created successfully"}
-        except sqlite3.Error as e:
-            return {"error": f"Error creating client: {e}"}
 
+            # Check if the first query was successful
+            if cursor.rowcount == 1:
+                # Insert client ID and access token into the tokens table
+                cursor.execute('''
+                    INSERT INTO {0} (client_id, access_token)
+                    VALUES (?, ?)
+                '''.format(tokens_table), (
+                    client_id,
+                    access_token  # Decode bytes to string for SQLite insertion
+                ))
+
+                self.conn.commit()
+                # Return a JSON response indicating success
+
+                response_content = {
+                    "message": "Client created successfully",
+                    "data": {
+                        "client_id": str(client_id),
+                        "access-token": str(access_token)
+                    }
+                }
+
+                return JSONResponse(status_code=200, content= response_content)
+            else:
+                # Return a JSON response indicating failure
+                return HTTPException(status_code=400, detail={"message": "Failed to create client"})
+        except sqlite3.Error as e:
+            # Return a JSON response indicating error
+            return HTTPException(status_code=400, detail={"error": f"Error creating client: {e}"})
     def create_clients_table(self, params):
         clients_table = params['clients_table']
         try:
@@ -214,6 +269,24 @@ class recommendationEngine():
             print("Clients table created successfully")
         except sqlite3.Error as e:
             print(f"Error creating clients table: {e}")
+
+    def create_tokens_table(self):
+        tokens_table = 'tokens_table'  # Assuming the name of the tokens table
+
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS {0} (
+                    client_id INTEGER PRIMARY KEY,
+                    access_token TEXT NOT NULL,
+                    FOREIGN KEY (client_id) REFERENCES clients(client_id)
+                    -- Add more columns as needed
+                )
+            '''.format(tokens_table))
+            self.conn.commit()
+            print("Tokens table created successfully")
+        except sqlite3.Error as e:
+            print(f"Error creating tokens table: {e}")
 
     # Condition data
     def create_dataframe(self, data, _type):
@@ -333,6 +406,7 @@ if params['create_database'] == True:
     RE.create_freelancers_table(params)
     RE.create_gigs_table(params)
     RE.create_clients_table(params)
+    RE.create_tokens_table()
 
 if params['insert_data'] == True:
     RE.insert_mock_freelancers_data(params)
