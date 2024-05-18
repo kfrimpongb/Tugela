@@ -1,32 +1,23 @@
-import os
 import ast
-import json
+import ast
 import random
-
-import jwt
-import openai
-import autogen
 import sqlite3
-import pandas as pd
-from fastapi import FastAPI, HTTPException
-
-import uuid
-import mysql.connector
-from langchain.agents import initialize_agent, Tool
-from langchain.agents import AgentType
-from starlette.responses import JSONResponse
-
-from prompts import JOB_RECRUITER_PROXY, JOB_RECRUITER_ASSISTANT
-from configs import llm_config
 from datetime import datetime, timedelta
 
+import autogen
+import jwt
+import pandas as pd
+from fastapi import HTTPException
+from starlette.responses import JSONResponse
 
+from configs import llm_config
+from prompts import JOB_RECRUITER_PROXY, JOB_RECRUITER_ASSISTANT
 
 
 ################################
 # Gig Recomendation 
 ################################
-class recommendationEngine():
+class RecommendationEngine():
     def __init__(self):
         # self.db_file = db_file
         self.conn = None
@@ -397,7 +388,7 @@ params = {
 }
 
 
-RE = recommendationEngine()
+RE = RecommendationEngine()
 
 RE.connect(params)
 
