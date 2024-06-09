@@ -1,5 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from Backend.python.api.models.ClientModel import ClientModel
+from Backend.python.api.routes.JWTBearer import JWTBearer
 from Backend.python.models.RecommendationEngine import RecommendationEngine
 from Backend.python.api.models.InputPayload import InputPayload
 
@@ -28,7 +29,37 @@ def work():
 def create_client(client: ClientModel):
     RE.connect(params)
     # Ensure the clients table exists before inserting a new client
-    table_result = RE.insert_client_data(params, client.dict())
+    table_result = RE.insert_customer_data(params, client.dict())
+    RE.close()
+    return table_result
+
+@router.post("/create_user")
+def create_user(client: ClientModel):
+    RE.connect(params)
+    # Ensure the clients table exists before inserting a new client
+    table_result = RE.create_customer_data(params, client.dict())
+    RE.close()
+    return table_result
+@router.post("/login")
+def create_user(client: ClientModel):
+    RE.connect(params)
+    # Ensure the clients table exists before inserting a new client
+    table_result = RE.sign_in(params, client.dict())
+    RE.close()
+    return table_result
+
+@router.put("/update_user", dependencies=[Depends(JWTBearer())])
+def update_user(client: ClientModel):
+    RE.connect(params)
+    # Ensure the clients table exists before inserting a new client
+    table_result = RE.update_customer_data(params, client.dict())
+    RE.close()
+    return table_result
+@router.put("/update_user")
+def updateUser(client: ClientModel):
+    RE.connect(params)
+    # Ensure the clients table exists before inserting a new client
+    table_result = RE.create_customer_data(params, client.dict())
     RE.close()
     return table_result
 
@@ -60,3 +91,12 @@ def perform_assessment(msg: InputPayload, gigs_table: str):
     top_gigs = RE.sort_job_requests(output_msg, assessment_params)
     RE.close()
     return {"top_gigs": top_gigs}
+
+
+
+# @router.get("/create_account")
+# def create_account(gigs_table: str):
+#     RE.connect(params)
+#     gig_data = RE.fetch_gig_data(params)
+#     RE.close()
+#     return {"gig_data": gig_data}
