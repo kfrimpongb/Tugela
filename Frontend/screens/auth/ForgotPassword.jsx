@@ -17,51 +17,24 @@ import CustomInput from "../../components/Input";
 import CustomButton from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
-import { useMutation } from "@apollo/client";
-import { FORGOT_PASSWORD } from "../../utils/mutations";
-import CustomBottomSheet from "../../components/ui/BottomSheet";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigation = useNavigation();
-  const [forgotPasswordMutation] = useMutation(FORGOT_PASSWORD);
-  const [visible, setVisible] = useState(false);
-  const [bottomSheetMessage, setBottomSheetMessage] = useState("");
-  const [isError, setIsError] = useState(false);
 
-  const displayBottomSheet = (message, isError) => {
-    setBottomSheetMessage(message);
-    setIsError(isError);
-    setVisible(true);
-  };
-  const navigateToOtp = () => {
-    navigation.navigate("ForgotOTP", { email: email });
-  };
   const navigateToLogin = () => {
     navigation.navigate("Login");
-  };
-  const closeBottomSheet = () => {
-    setVisible(!visible);
   };
   const navigateToResetPassword = () => {
     navigation.navigate("ResetPassword");
   };
+  const isFormValid = () => {
+    return email !== "" && password !== "";
+  };
 
   const handleEmailChange = (text) => {
     setEmail(text);
-  };
-
-  const forgotPassword = async () => {
-    if (!email) return;
-    try {
-      const response = await forgotPasswordMutation({
-        variables: { input: { email } },
-      });
-      const successMessage = response.data.forgotPassword.message;
-      displayBottomSheet(successMessage, false);
-    } catch (error) {
-      displayBottomSheet(error.message, true);
-    }
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -83,13 +56,13 @@ const ForgotPassword = () => {
               type="Email"
               label="Email"
               placeholder={"Enter your email address"}
-              onChange={handleEmailChange}
+              onChangeText={handleEmailChange}
             />
 
             <CustomButton
               title={"Send reset instructions"}
-              disabled={!email}
-              onPress={forgotPassword}
+              disabled={isFormValid()}
+              onPress={navigateToResetPassword}
             />
             <View style={styles.account}>
               <Button onPress={navigateToLogin} type="clear">
@@ -101,13 +74,6 @@ const ForgotPassword = () => {
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-      <CustomBottomSheet
-        visible={visible}
-        onClose={closeBottomSheet}
-        isError={isError}
-        message={bottomSheetMessage}
-        onPress={isError ? closeBottomSheet : navigateToOtp}
-      />
     </SafeAreaView>
   );
 };

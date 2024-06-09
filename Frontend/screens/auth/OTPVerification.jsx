@@ -6,10 +6,8 @@ import {
   TouchableWithoutFeedback,
   View,
   TouchableOpacity,
-  Platform,
-  Keyboard,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import tp from "../../assets/images/OTP.png";
 import check from "../../assets/images/check.png";
@@ -18,116 +16,40 @@ import colors from "../../colors";
 import CustomText from "../../components/ui/Text";
 import { Global } from "../../globalStyles";
 import CustomButton from "../../components/Button";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import OtpInputs from "../../components/OTP";
-import { useMutation } from "@apollo/client";
-import { OTP_USER } from "../../utils/mutations";
-import { SEND_OTP } from "../../utils/mutations";
-import CustomBottomSheet from "../../components/ui/BottomSheet";
+import { BottomSheet } from "@rneui/themed";
 
-const OTPVerification = ({
-  onVerificationSuccess,
-  onVerificationFailure,
-  onSendOtpSuccess,
-  onSendOtpFailure,
-  closeBottomSheet,
-}) => {
+const OTPVerification = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigation = useNavigation();
-  const route = useRoute();
   const [otp, setOtp] = useState("");
   const [visible, setVisible] = useState(false);
-  const [sendOtpVisible, setSendOtpVisible] = useState(false);
-  const [bottomSheetMessage, setBottomSheetMessage] = useState("");
-  const [bottomSheetMessage2, setBottomSheetMessage2] = useState("");
-  const [isError, setIsError] = useState(false);
-  const [isSendError, setIsSendError] = useState(false);
-  const [nextAction, setNextAction] = useState(null);
-  const [verifyOtpMutation] = useMutation(OTP_USER);
-  const [sendOtpMutation] = useMutation(SEND_OTP);
 
-  useEffect(() => {
-    // Perform the action when the bottom sheet is closed
-    if (!visible && !sendOtpVisible && nextAction) {
-      nextAction();
-      setNextAction(null); // Reset the action
-    }
-  }, [visible, sendOtpVisible, nextAction]);
-
-  // ... existing functions
-
-  // Call this function to close the bottom sheet and set the next action
-  const closeBottomSheetAndNavigate = (action) => {
-    setNextAction(() => action); // Set the next action
-    setVisible(false); // Close the bottom sheet
-    setSendOtpVisible(false);
+  const handleOtpComplete = (otpValue) => {
+    setOtp(otpValue);
   };
 
-  const returnToOtp = () => {
-    setVisible(!visible);
-  };
-
-  const showVerificationBottomSheet = (message, isError) => {
-    setBottomSheetMessage(message);
-    setIsError(isError);
+  const showBottomSheet = () => {
     setVisible(true);
-  };
-  const showSendOtpBottomSheet = (message, isSendError) => {
-    setBottomSheetMessage2(message);
-    setIsSendError(isSendError);
-    setSendOtpVisible(true);
+    navigation.navigate("OTP");
   };
   const navigateToOnboarding = () => {
     setVisible(false);
     navigation.navigate("Onboarding");
   };
-
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
-  const email = route.params?.email || "";
-
-  const handleOtpComplete = async () => {
-    if (!otp) return;
-    try {
-      const response = await verifyOtpMutation({
-        variables: {
-          input: {
-            email,
-            token: otp,
-          },
-        },
-      });
-
-      console.log(response.data.verifyOtp);
-      showVerificationBottomSheet("Verification successful", false);
-      onVerificationSuccess(response.data);
-    } catch (error) {
-      showVerificationBottomSheet("Verification Failed", true);
-      onVerificationFailure(error);
-    }
+  const isFormValid = () => {
+    return email !== "" && password !== "";
   };
 
-  const handleSendOtp = async () => {
-    try {
-      const response = await sendOtpMutation({
-        variables: {
-          input: {
-            email,
-          },
-        },
-      });
-
-      console.log(response.data.sendOtp);
-      showSendOtpBottomSheet("OTP sent successfully", true);
-      onSendOtpSuccess(response.data);
-    } catch (error) {
-      console.error("OTP verification error:", error.message);
-      showSendOtpBottomSheet("OTP send failed", true);
-      onSendOtpFailure(error);
-    }
+  const handleEmailChange = (text) => {
+    setEmail(text);
   };
 
-  const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0;
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -148,56 +70,71 @@ const OTPVerification = ({
             color: colors.primary,
           }}
         >
-          {email}
+          frimpongdarkwakwame@gmail.com
         </CustomText>
       </View>
-      <TouchableWithoutFeedback onPress={dismissKeyboard}>
-        <KeyboardAvoidingView
-          style={styles.form}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={keyboardVerticalOffset}
-        >
+      <TouchableWithoutFeedback>
+        <KeyboardAvoidingView style={styles.form}>
           <View>
-            <OtpInputs onOtpComplete={setOtp} />
+            <OtpInputs onOtpComplete={handleOtpComplete} />
             <View style={styles.account}>
               <View style={styles.signup}>
-                <TouchableOpacity onPress={handleSendOtp}>
+                <TouchableOpacity>
                   <CustomText style={styles.forgot} weight="semibold">
                     Send code again
                   </CustomText>
                 </TouchableOpacity>
               </View>
             </View>
+            <CustomButton
+              title={"Confirm"}
+              disabled={isFormValid()}
+              onPress={showBottomSheet}
+            />
           </View>
-          <CustomButton
-            title={"Confirm"}
-            disabled={!otp}
-            onPress={handleOtpComplete}
-          />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-      <CustomBottomSheet
-        visible={visible}
-        onClose={returnToOtp}
-        isError={isError}
-        message={bottomSheetMessage}
-        onPress={() => {
-          const action = isError
-            ? onVerificationFailure
-            : onVerificationSuccess;
-          closeBottomSheetAndNavigate(action);
-        }}
-      />
-      <CustomBottomSheet
-        visible={sendOtpVisible}
-        onClose={() => setSendOtpVisible(false)}
-        isSendError={isSendError}
-        message={bottomSheetMessage2}
-        onPress={() => {
-          const action = isSendError ? onSendOtpFailure : onSendOtpSuccess;
-          closeBottomSheetAndNavigate(action);
-        }}
-      />
+      <BottomSheet isVisible={visible} modalProps={{}}>
+        <View style={styles.bottomSheet}>
+          <TouchableOpacity
+            onPress={() => setVisible(!visible)}
+            style={styles.closeButton}
+          >
+            <CustomText
+              weight="semibold"
+              style={{ fontSize: 16, color: colors.text }}
+            >
+              Close
+            </CustomText>
+          </TouchableOpacity>
+          <Image source={check} style={styles.check} />
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "column",
+              alignItems: "center",
+              paddingBottom: 60,
+            }}
+          >
+            <CustomText weight="semibold" style={{ fontSize: 24 }}>
+              Verified Successfully
+            </CustomText>
+            <CustomText
+              weight="regular"
+              style={{ fontSize: 14, textAlign: "center", paddingTop: 4 }}
+            >
+              We have successfully verified your email address.
+            </CustomText>
+          </View>
+          <View style={{ width: "100%", paddingBottom: 16 }}>
+            <CustomButton
+              title={"Continue"}
+              disabled={isFormValid()}
+              onPress={navigateToOnboarding}
+            />
+          </View>
+        </View>
+      </BottomSheet>
     </SafeAreaView>
   );
 };
@@ -240,15 +177,13 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 7,
-    justifyContent: "space-between",
     fontFamily: Fonts.medium,
     paddingHorizontal: 16,
-    paddingVertical: 16,
   },
   title: {
     flexDirection: "column",
     alignItems: "flex-start",
-    paddingVertical: 14,
+    paddingBottom: 14,
     width: "100%",
   },
   account: {
