@@ -17,24 +17,12 @@ import { Global } from "../../globalStyles";
 import CustomInput from "../../components/Input";
 import CustomButton from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
-import { Dialog } from "@rneui/themed";
-import { useMutation } from "@apollo/client";
-import { LOGIN_USER } from "../../utils/mutations";
-import CustomBottomSheet from "../../components/ui/BottomSheet";
+import { Button } from "@rneui/themed";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
-  const [loginUser] = useMutation(LOGIN_USER);
-  const [visible, setVisible] = useState(false);
-  const [visible1, setVisible1] = useState(false);
-  const [bottomSheetMessage, setBottomSheetMessage] = useState("");
-  const [isError, setIsError] = useState(false);
-
-  const toggleDialog = () => {
-    setVisible(!visible);
-  };
 
   const navigateToForgotPassword = () => {
     navigation.navigate("ForgotPassword");
@@ -42,7 +30,6 @@ const LoginScreen = () => {
   const navigateToSignup = () => {
     navigation.navigate("Signup");
   };
-
   const isFormValid = () => {
     return email !== "" && password !== "";
   };
@@ -54,41 +41,6 @@ const LoginScreen = () => {
   const handlePasswordChange = (text) => {
     setPassword(text);
   };
-
-  const displayBottomSheet = (message, isError) => {
-    setBottomSheetMessage(message);
-    setIsError(isError);
-    setVisible1(true);
-  };
-
-  const closeBottomSheet = () => {
-    setVisible1(!visible1);
-  };
-
-  // graph ql mutation to handle login
-  const handleLogin = async () => {
-    if (!isFormValid()) return;
-
-    try {
-      const response = await loginUser({
-        variables: {
-          input: {
-            email: email,
-            password: password,
-          },
-        },
-      });
-
-      console.log("Login successful:", response.data.login);
-      setVisible(true);
-      setTimeout(() => {
-        setVisible(false); // Hide loading dialog
-        navigation.navigate("Home"); // Navigate to Home
-      }, 2000);
-    } catch (error) {
-      displayBottomSheet(`${error.message}`, true);
-    }
-  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -98,7 +50,7 @@ const LoginScreen = () => {
             Tugela
           </CustomText>
         </View>
-        <CustomText weight="regular" style={Global.h4}>
+        <CustomText weight="medium" style={Global.h3}>
           Sign In
         </CustomText>
       </View>
@@ -109,19 +61,15 @@ const LoginScreen = () => {
               type="Email"
               label="Email"
               placeholder={"Enter your email address"}
-              onChange={handleEmailChange}
+              onChangeText={handleEmailChange}
             />
             <CustomInput
               type="Password"
               label="Password"
               placeholder={"Enter your password"}
-              onChange={handlePasswordChange}
+              onChangeText={handlePasswordChange}
             />
-            <CustomButton
-              title={"Sign In"}
-              disabled={!isFormValid()}
-              onPress={handleLogin}
-            />
+            <CustomButton title={"Sign In"} disabled={isFormValid()} />
             <View style={styles.account}>
               <View style={styles.signup}>
                 <CustomText style={Global.small}>
@@ -160,16 +108,6 @@ const LoginScreen = () => {
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-      <Dialog isVisible={visible} onBackdropPress={toggleDialog}>
-        <Dialog.Loading />
-      </Dialog>
-      <CustomBottomSheet
-        visible={visible1}
-        onClose={closeBottomSheet}
-        isError={isError}
-        message={bottomSheetMessage}
-        onPress={isError ? closeBottomSheet : ""}
-      />
     </SafeAreaView>
   );
 };

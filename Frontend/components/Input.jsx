@@ -6,15 +6,8 @@ import colors from "../colors";
 import { Fonts } from "../theme";
 import { Global } from "../globalStyles";
 
-const CustomInput = ({
-  type,
-  placeholder,
-  label,
-  leftIcon,
-  rightIcon,
-  value,
-  onChange,
-}) => {
+const CustomInput = ({ type, placeholder, label, leftIcon, rightIcon }) => {
+  const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -22,14 +15,6 @@ const CustomInput = ({
     let errorMessage = "";
 
     switch (type) {
-      case "Text":
-        const isTextValid = text.trim() !== "";
-        if (!isTextValid) errorMessage = "Text cannot be empty";
-        break;
-      case "TextArea":
-        const isTextAreaValid = text.trim() !== "";
-        if (!isTextAreaValid) errorMessage = "Text area cannot be empty";
-        break;
       case "Email":
         const emailRegex = /\S+@\S+\.\S+/;
         if (!emailRegex.test(text)) errorMessage = "Invalid email address";
@@ -67,7 +52,7 @@ const CustomInput = ({
   const handleChangeText = (text) => {
     const errorMessage = validateInput(text);
     setError(errorMessage);
-    onChange(text);
+    setValue(text);
   };
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible); // Toggles the state
@@ -91,11 +76,6 @@ const CustomInput = ({
         return { keyboardType: "numeric" };
       case "PhoneNumber":
         return { keyboardType: "phone-pad" };
-      case "TextArea":
-        return {
-          multiline: true,
-          numberOfLines: 5,
-        };
       default:
         return {};
     }
@@ -104,10 +84,7 @@ const CustomInput = ({
   return (
     <Input
       containerStyle={styles.inputContainer}
-      inputContainerStyle={[
-        styles.input,
-        type === "TextArea" && styles.textAreaInput,
-      ]}
+      inputContainerStyle={styles.input}
       value={value}
       onChangeText={handleChangeText}
       errorMessage={error}
@@ -145,7 +122,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     width: "100%",
     paddingHorizontal: 0,
-    marginVertical: 2,
   },
   inputError: {
     color: colors.danger,
@@ -163,12 +139,7 @@ const styles = StyleSheet.create({
   inputText: {
     fontFamily: Fonts.regular,
     fontSize: 14,
-    color: colors.title,
+    color: colors.text,
     margin: 0,
-  },
-  textAreaInput: {
-    height: 160, // Customize the height for the text area
-    textAlignVertical: "top",
-    paddingBottom: 90,
   },
 });

@@ -6,8 +6,6 @@ import {
   TouchableWithoutFeedback,
   View,
   TouchableOpacity,
-  ScrollView,
-  Platform,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -19,53 +17,14 @@ import { Global } from "../../globalStyles";
 import CustomInput from "../../components/Input";
 import CustomButton from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
-import { useMutation } from "@apollo/client";
-import { CREATE_USER } from "../../utils/mutations";
-import google from "../../assets/images/google.png";
-import CustomBottomSheet from "../../components/ui/BottomSheet";
-import * as firebase from "firebase/app";
-import { GoogleSignin } from "expo-google-sign-in";
 
-GoogleSignin.configure({
-  webClientId:
-    "399762595126-ha7mup7mnn0m7vdpdd5ev7k71cvucctt.apps.googleusercontent.com",
-});
 const SignUpScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [createUserMutation] = useMutation(CREATE_USER);
-  const [visible, setVisible] = useState(false);
-  const [bottomSheetMessage, setBottomSheetMessage] = useState("");
-  const [isError, setIsError] = useState(false);
-
   const navigation = useNavigation();
 
-  const signInWithGoogleAsync = async () => {
-    try {
-      const { type, user } = await GoogleSignin.signInAsync();
-
-      if (type === "success") {
-        const credential = firebase.auth.GoogleAuthProvider.credential(
-          user.auth.idToken,
-          user.auth.accessToken
-        );
-        await firebase.auth().signInWithCredential(credential);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const showBottomSheet = () => {
-    setVisible(true);
-    navigation.navigate("OTP");
-  };
-  const returnToSignUpScreen = () => {
-    setVisible(!visible);
-  };
   const navigateToOtp = () => {
-    createUser();
-    navigation.navigate("SignupOTP", { email: email });
+    navigation.navigate("OTP");
   };
   const navigateToLogin = () => {
     navigation.navigate("Login");
@@ -73,6 +32,7 @@ const SignUpScreen = () => {
   const isFormValid = () => {
     return email !== "" && password !== "";
   };
+
   const handleEmailChange = (text) => {
     setEmail(text);
   };
@@ -80,80 +40,38 @@ const SignUpScreen = () => {
   const handlePasswordChange = (text) => {
     setPassword(text);
   };
-
-  const displayBottomSheet = (message, isError) => {
-    setBottomSheetMessage(message);
-    setIsError(isError);
-    setVisible(true);
-  };
-
-  //  graph ql mutation to handle creation of a user
-  const createUser = async () => {
-    if (!isFormValid()) return;
-
-    console.log(email, password);
-
-    try {
-      const response = await createUserMutation({
-        variables: {
-          input: {
-            email,
-            password,
-          },
-        },
-      });
-
-      console.log("User created:", response.data.message);
-
-      const successMessage = response.data.signup.message;
-      displayBottomSheet(successMessage, false);
-    } catch (error) {
-      displayBottomSheet(`${error.message}`, true);
-    }
-  };
-
-  const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0;
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.header}>
-          <View style={styles.title}>
-            <Image source={fav} style={styles.fav} />
-            <CustomText style={Global.h2} weight="medium">
-              Tugela
-            </CustomText>
-          </View>
-          <CustomText weight="regular" style={Global.h4}>
-            Create an account
+      <View style={styles.header}>
+        <View style={styles.title}>
+          <Image source={fav} style={styles.fav} />
+          <CustomText style={Global.h2} weight="medium">
+            Tugela
           </CustomText>
         </View>
-        <TouchableWithoutFeedback>
-          <KeyboardAvoidingView
-            style={styles.form}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={keyboardVerticalOffset}
-          >
+        <CustomText weight="medium" style={Global.h3}>
+          Create an account
+        </CustomText>
+      </View>
+      <TouchableWithoutFeedback>
+        <KeyboardAvoidingView style={styles.form}>
+          <View>
             <CustomInput
               type="Email"
               label="Email"
               placeholder={"Enter your email address"}
-              onChange={handleEmailChange}
-              value={email}
+              onChangeText={handleEmailChange}
             />
             <CustomInput
               type="Password"
               label="Password"
               placeholder={"Enter your password"}
-              onChange={handlePasswordChange}
-              value={password}
+              onChangeText={handlePasswordChange}
             />
             <CustomButton
               title={"Create an account"}
-              disabled={!isFormValid()}
-              onPress={createUser}
+              disabled={isFormValid()}
+              onPress={navigateToOtp}
             />
             <View style={styles.account}>
               <View style={styles.signup}>
@@ -180,22 +98,14 @@ const SignUpScreen = () => {
             <CustomButton
               title={"Sign in with Google"}
               disabled={false}
-              icon={google}
+              icon={"google"}
               iconColor={colors.primary}
               buttonStyle={styles.button}
               titleStyle={styles.buttonText}
-              onPress={signInWithGoogleAsync}
             />
-          </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
-      </ScrollView>
-      <CustomBottomSheet
-        visible={visible}
-        onClose={returnToSignUpScreen}
-        isError={isError}
-        message={bottomSheetMessage}
-        onPress={isError ? returnToSignUpScreen : navigateToOtp}
-      />
+          </View>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };
@@ -211,12 +121,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: "space-between",
-    flexDirection: "column",
-    paddingVertical: 40,
   },
   header: {
     flex: 3,
@@ -237,7 +141,6 @@ const styles = StyleSheet.create({
     flex: 7,
     fontFamily: Fonts.medium,
     paddingHorizontal: 16,
-    marginVertical: 40,
   },
   title: {
     flexDirection: "row",
@@ -288,29 +191,5 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: Fonts.medium,
     color: colors.primary,
-  },
-  bottomSheet: {
-    flexDirection: "column",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    backgroundColor: colors.background,
-    borderTopRightRadius: 24,
-    borderTopLeftRadius: 24,
-    paddingBottom: 16,
-    paddingHorizontal: 24,
-  },
-  closeButton: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "flex-start",
-    paddingVertical: 32,
-  },
-  check: {
-    width: 100,
-    height: 100,
-    marginRight: 4,
-    marginBottom: 14,
   },
 });
