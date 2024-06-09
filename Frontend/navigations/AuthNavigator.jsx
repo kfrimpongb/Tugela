@@ -5,9 +5,11 @@ import LoginScreen from "../screens/auth/LoginScreen";
 import SignUpScreen from "../screens/auth/SignUpScreen";
 import ForgotPassword from "../screens/auth/ForgotPassword";
 import ResetPassword from "../screens/auth/ResetPassword";
-import OTPVerification from "../screens/auth/OTPVerification";
-import Onboarding from "../screens/auth/Onboarding";
 import Back from "../components/ui/Back";
+import Onboarding from "../screens/auth/Onboarding";
+import SignupOTP from "../screens/auth/SignupOTP";
+import ForgotOTP from "../screens/auth/ForgotOTP";
+import HomeScreen from "../screens/HomeScreen";
 const Stack = createStackNavigator();
 const AuthNavigator = () => {
   return (
@@ -15,6 +17,11 @@ const AuthNavigator = () => {
       <Stack.Screen
         name="Splash"
         component={SplashScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -38,8 +45,16 @@ const AuthNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="OTP"
-        component={OTPVerification}
+        name="SignupOTP"
+        component={SignupOTP}
+        options={{
+          headerLeft: () => <Back />,
+          headerTitle: "",
+        }}
+      />
+      <Stack.Screen
+        name="ForgotOTP"
+        component={ForgotOTP}
         options={{
           headerLeft: () => <Back />,
           headerTitle: "",

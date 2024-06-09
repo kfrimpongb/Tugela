@@ -1,23 +1,58 @@
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./navigations/AppNavigator";
-import AuthProvider from "./context/AuthContext";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import LoadFonts from "./loadFonts";
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+} from "@apollo/client/react";
+import { gql } from "@apollo/client";
+import { useEffect } from "react";
+import { initializeApp } from "firebase/app";
+import "firebase/auth";
+import firebaseConfig from "./firebaseConfig";
 
+const cache = new InMemoryCache();
+const client = new ApolloClient({
+  uri: "http://18.157.169.254:3005/graphql",
+  cache,
+  typeDefs: `
+    extend type Query {
+      isAuthenticated: Boolean!
+    }
+  `,
+  resolvers: {},
+});
+
+cache.writeQuery({
+  query: gql`
+    query GetAuthState {
+      isAuthenticated
+    }
+  `,
+  data: {
+    isAuthenticated: false,
+  },
+});
 export default function App() {
+  useEffect(() => {
+    firebase.initializeApp(firebaseConfig);
+  }, []);
   const [fontsLoaded] = LoadFonts();
   if (!fontsLoaded) {
     return null;
   }
+
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <AuthProvider>
+    <ApolloProvider client={client}>
+      <SafeAreaProvider>
+        <NavigationContainer>
           <StatusBar animated={true} style="auto" />
           <AppNavigator />
-        </AuthProvider>
-      </NavigationContainer>
-    </SafeAreaProvider>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </ApolloProvider>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, ActivityIndicator } from "react-native";
+import { StyleSheet, ActivityIndicator, Image } from "react-native";
 import { Button as RNEButton } from "@rneui/themed";
 import { Fonts } from "../theme";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -17,6 +17,7 @@ const CustomButton = ({
   iconColor,
   buttonStyle,
   titleStyle,
+  image,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,7 +46,7 @@ const CustomButton = ({
       type={type}
       size={size}
       raised={raised}
-      icon={<Icon name={icon} size={20} color={iconColor} />}
+      icon={<Image source={image} style={{ width: 20, height: 20 }} />}
       iconPosition={iconPosition}
     />
   );
