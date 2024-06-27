@@ -1,10 +1,14 @@
-from fastapi import APIRouter, Depends
+import jwt
+from fastapi import APIRouter, Depends, Request, FastAPI
+
 from Backend.python.api.models.ClientModel import ClientModel
 from Backend.python.api.routes.JWTBearer import JWTBearer
 from Backend.python.models.RecommendationEngine import RecommendationEngine
 from Backend.python.api.models.InputPayload import InputPayload
 
 router = APIRouter()
+app = FastAPI()
+
 RE = RecommendationEngine()
 params = {
     'db': 'tugela',
@@ -33,6 +37,7 @@ def create_client(client: ClientModel):
     RE.close()
     return table_result
 
+
 @router.post("/create_user")
 def create_user(client: ClientModel):
     RE.connect(params)
@@ -40,6 +45,8 @@ def create_user(client: ClientModel):
     table_result = RE.create_customer_data(params, client.dict())
     RE.close()
     return table_result
+
+
 @router.post("/login")
 def create_user(client: ClientModel):
     RE.connect(params)
@@ -48,18 +55,26 @@ def create_user(client: ClientModel):
     RE.close()
     return table_result
 
-@router.put("/update_user", dependencies=[Depends(JWTBearer())])
-def update_user(client: ClientModel):
+
+# Initialize JWTBearer and connect to the database
+db_file = 'tugela.db'
+jwt_bearer = JWTBearer(db_file)
+
+
+@router.patch("/update_client_profile",  dependencies=[Depends(jwt_bearer)])
+def update_client_profile(client: ClientModel, token: str = Depends(jwt_bearer)):
     RE.connect(params)
     # Ensure the clients table exists before inserting a new client
-    table_result = RE.update_customer_data(params, client.dict())
+    table_result = RE.update_customer_data(params, client.dict(), client_id=token)
     RE.close()
     return table_result
-@router.put("/update_user")
-def updateUser(client: ClientModel):
+
+
+@router.patch("/update_freelancer_profile",  dependencies=[Depends(jwt_bearer)])
+def update_client_profile(client: ClientModel, token: str =Depends(jwt_bearer)):
     RE.connect(params)
     # Ensure the clients table exists before inserting a new client
-    table_result = RE.create_customer_data(params, client.dict())
+    table_result = RE.update_freelancer_data(params, client.dict(), freelancer_id=token)
     RE.close()
     return table_result
 
@@ -91,8 +106,6 @@ def perform_assessment(msg: InputPayload, gigs_table: str):
     top_gigs = RE.sort_job_requests(output_msg, assessment_params)
     RE.close()
     return {"top_gigs": top_gigs}
-
-
 
 # @router.get("/create_account")
 # def create_account(gigs_table: str):

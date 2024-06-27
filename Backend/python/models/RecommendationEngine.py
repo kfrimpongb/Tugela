@@ -33,7 +33,7 @@ class RecommendationEngine():
         db_file = params['db_file']
         self.db_file = db_file
         try:
-            self.conn = sqlite3.connect(self.db_file, timeout=10)
+            self.conn = sqlite3.connect(self.db_file, timeout=5)
             print("Connected to SQLite database")
         except sqlite3.Error as e:
             print(f"Error connecting to SQLite database: {e}")
@@ -521,6 +521,7 @@ class RecommendationEngine():
 
         except sqlite3.Error as e:
             raise HTTPException(status_code=400, detail={"error": f"Error signing in: {e}"})
+
     def hash_password(self, password):
         salt = bcrypt.gensalt()
         hashed = bcrypt.hashpw(password.encode(), salt)
@@ -529,89 +530,110 @@ class RecommendationEngine():
     def verify_password(self, password, hashed_password):
         return bcrypt.checkpw(password.encode(), hashed_password)
 
-    def update_customer_data(self, params, customer_data):
+    def update_customer_data(self, params, customer_data, client_id):
         clients_table = params['clients_table']
-        customer_type = customer_data['customer_type']
-        freelancers_table = params['freelancer_table']  # Assuming the name of the freelancers table
+        if not client_id:
+            raise HTTPException(status_code=400, detail={"message": "client_id is required"})
 
         try:
             cursor = self.conn.cursor()
-
-            # Determine the target table based on the customer type
-            if customer_type == 'client':
-                target_table = clients_table
-                id_field = 'client_id'
-            elif customer_type == 'freelancer':
-                id_field = 'freelancer_id'
-                target_table = freelancers_table
-            else:
-                raise HTTPException(status_code=400, detail={"message": "Invalid customer type"})
-
-            # Begin immediate transaction
             cursor.execute("BEGIN IMMEDIATE")
 
-            # Check if the customer ID exists in the target table
-            cursor.execute(f"SELECT {id_field} FROM {target_table} WHERE {id_field} = ?", (customer_data[id_field],))
+            cursor.execute(f"SELECT client_id FROM {clients_table} WHERE client_id = ?", (client_id,))
             existing_customer = cursor.fetchone()
 
             if not existing_customer:
-                # If the customer ID does not exist, return a JSON response indicating that the customer was not found
                 raise HTTPException(status_code=404, detail={"message": "Customer not found", "data": ""})
 
-            # Update the customer data in the appropriate table
-            if customer_type == "freelancer":
-                cursor.execute(f'''
-                    UPDATE {target_table}
-                    SET email = ?, password = ?, first_name = ?, middle_name = ?, last_name = ?, skills = ?, experience = ?, country = ?
-                    WHERE {id_field} = ?
-                ''', (
-                    customer_data['email'],  # Ensure email is provided
-                    customer_data['password'],  # Ensure password is provided
-                    customer_data.get('first_name', ''),  # Handle missing first_name gracefully
-                    customer_data.get('middle_name', ''),  # Handle missing middle_name gracefully
-                    customer_data.get('last_name', ''),  # Handle missing last_name gracefully
-                    customer_data.get('skills', ''),  # Handle missing skills gracefully
-                    customer_data.get('experience', ''),  # Handle missing experience gracefully
-                    customer_data['country'],  # Ensure country is provided
-                    customer_data[id_field]  # Ensure customer ID is provided
-                ))
-            else:
-                cursor.execute(f'''
-                    UPDATE {target_table}
-                    SET email = ?, password = ?, entity_name = ?, entity_id = ?, first_name = ?, middle_name = ?, last_name = ?, currency = ?, country = ?
-                    WHERE {id_field} = ?
-                ''', (
-                    customer_data['email'],  # Ensure email is provided
-                    customer_data['password'],  # Ensure password is provided
-                    customer_data.get('entity_name', ''),  # Handle missing entity_name gracefully
-                    customer_data.get('entity_id', ''),  # Handle missing entity_id gracefully
-                    customer_data.get('first_name', ''),  # Handle missing first_name gracefully
-                    customer_data.get('middle_name', ''),  # Handle missing middle_name gracefully
-                    customer_data.get('last_name', ''),  # Handle missing last_name gracefully
-                    customer_data.get('currency', ''),  # Handle missing currency gracefully
-                    customer_data['country'],  # Ensure country is provided
-                    customer_data[id_field]  # Ensure customer ID is provided
-                ))
+            # Fields allowed to be updated
+            fields = ['entity_name', 'entity_id', 'first_name', 'middle_name', 'last_name',
+                      'country', 'currency', 'join_date']
 
-            # Check if the update was successful
+            update_fields = []
+            update_values = []
+
+            for field in fields:
+                if field in customer_data and customer_data[field] is not None:
+                    update_fields.append(f"{field} = ?")
+                    update_values.append(customer_data[field])
+
+            if update_fields:
+                update_values.append(client_id)
+                cursor.execute(f"UPDATE {clients_table} SET {', '.join(update_fields)} WHERE client_id = ?",
+                               update_values)
+
             if cursor.rowcount == 1:
                 self.conn.commit()
-                # Return a JSON response indicating success
                 response_content = {
                     "message": "Customer updated successfully",
                     "data": {
-                        "client_id": str(customer_data[id_field])
+                        "client_id": str(client_id)
                     }
                 }
                 return JSONResponse(status_code=200, content=response_content)
             else:
-                # Return a JSON response indicating failure
                 raise HTTPException(status_code=400, detail={"message": "Failed to update customer"})
+
         except sqlite3.Error as e:
-            # Rollback in case of error
             self.conn.rollback()
-            # Return a JSON response indicating error
             raise HTTPException(status_code=400, detail={"error": f"Error updating customer: {e}"})
+        finally:
+            cursor.close()
+
+    def update_freelancer_data(self, params, freelancer_data, freelancer_id):
+        freelancers_table = params['freelancer_table']
+
+        if not freelancer_id:
+            raise HTTPException(status_code=400, detail={"message": "freelancer_id is required"})
+
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("BEGIN IMMEDIATE")
+
+            cursor.execute(f"SELECT freelancer_id FROM {freelancers_table} WHERE freelancer_id = ?", (freelancer_id,))
+            existing_freelancer = cursor.fetchone()
+
+            if not existing_freelancer:
+                raise HTTPException(status_code=404, detail={"message": "Freelancer not found", "data": ""})
+
+            # Fields allowed to be updated
+            fields = ['first_name', 'middle_name', 'last_name', 'skills', 'experience', 'linkedin_url', 'country',
+                      'base_currency', 'join_date']
+
+            update_fields = []
+            update_values = []
+
+            for field in fields:
+                if field in freelancer_data and freelancer_data[field] is not None:
+                    if field == 'skills':
+                        # Convert list of skills to a comma-separated string for storage
+                        skills_str = ','.join(freelancer_data[field])
+                        update_fields.append(f"{field} = ?")
+                        update_values.append(skills_str)
+                    else:
+                        update_fields.append(f"{field} = ?")
+                        update_values.append(freelancer_data[field])
+
+            if update_fields:
+                update_values.append(freelancer_id)
+                cursor.execute(f"UPDATE {freelancers_table} SET {', '.join(update_fields)} WHERE freelancer_id = ?",
+                               update_values)
+
+            if cursor.rowcount == 1:
+                self.conn.commit()
+                response_content = {
+                    "message": "Freelancer updated successfully",
+                    "data": {
+                        "freelancer_id": str(freelancer_id)
+                    }
+                }
+                return JSONResponse(status_code=200, content=response_content)
+            else:
+                raise HTTPException(status_code=400, detail={"message": "Failed to update freelancer"})
+
+        except sqlite3.Error as e:
+            self.conn.rollback()
+            raise HTTPException(status_code=400, detail={"error": f"Error updating freelancer: {e}"})
         finally:
             cursor.close()
 
